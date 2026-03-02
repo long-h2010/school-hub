@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
-import { SocketIoAdapter } from './socket/socket.adapter';
+import { SocketIoAdapter } from './infrastructure/socket/socket.adapter';
 import { JwtService } from '@nestjs/jwt';
 
 async function bootstrap() {

@@ -1,25 +1,30 @@
-import { DatabaseModule } from './../database/database.module';
+import { DatabaseModule } from './infrastructure/database/database.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { PostModule } from './post/post.module';
-import { ChatModule } from './chat/chat.module';
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { CommentModule } from './comment/comment.module';
-import { MessageModule } from './message/message.module';
-import { SocketModule } from './socket/socket.module';
-import { FollowingModule } from './following/following.module';
+import { AuthModule } from './api/auth/auth.module';
+import { ChatModule } from './api/chat/chat.module';
+import { CommentModule } from './api/comment/comment.module';
+import { FollowingModule } from './api/following/following.module';
+import { MessageModule } from './api/message/message.module';
+import { PostModule } from './api/post/post.module';
+import { UserModule } from './api/user/user.module';
+import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module';
+import { SocketModule } from './infrastructure/socket/socket.module';
 
 @Module({
   imports: [
-    DatabaseModule, 
-    AuthModule, 
-    UserModule, 
-    PostModule, 
-    ChatModule, 
-    CloudinaryModule, CommentModule, MessageModule, SocketModule, FollowingModule],
+    DatabaseModule,
+    AuthModule,
+    UserModule,
+    PostModule,
+    ChatModule,
+    CloudinaryModule,
+    CommentModule,
+    MessageModule,
+    SocketModule,
+    FollowingModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
