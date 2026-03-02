@@ -4,7 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/api/user/user.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import UserStatus from 'enums/user-status.enum';
+import UserStatus from 'src/common/enums/user-status.enum';
 
 @Injectable()
 export class AuthService {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { CreatePostDto } from './dto/create-post.dto';
-import VisibilityType from 'enums/visibility.enum';
+import VisibilityType from 'src/common/enums/visibility.enum';
 import { CloudinaryService } from 'src/infrastructure/cloudinary/cloudinary.service';
 import { PostRepository } from './post.repository';
 

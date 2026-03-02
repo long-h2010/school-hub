@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { User } from './user.schema';
-import VisibilityType from 'enums/visibility.enum';
+import VisibilityType from 'src/common/enums/visibility.enum';
 
 @Schema({ timestamps: true })
 export class Post {
