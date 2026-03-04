@@ -2,18 +2,18 @@ import { useState } from 'react';
 import type { NewPost } from '../types/post';
 
 export default function useNewPost() {
-    const [newPost, setNewPost] = useState<NewPost | null>(null);
+  const [newPost, setNewPost] = useState<NewPost | null>(null);
 
-    const updatePost = <K extends keyof NewPost>(key: K, value: NewPost[K]) => {
-        setNewPost((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
-    };
+  const updatePost = <K extends keyof NewPost>(key: K, value: NewPost[K]) => {
+    setNewPost((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
-    const clearPost = () => {
-        setNewPost(null);
-    };
+  const clearPost = () => {
+    setNewPost(null);
+  };
 
-    return { newPost, setNewPost, updatePost, clearPost };
+  return { newPost, setNewPost, updatePost, clearPost };
 }

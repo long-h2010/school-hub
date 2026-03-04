@@ -1,44 +1,44 @@
 {
-    "profile": "Trang cá nhân",
-    "setting": "Cài đặt",
-    "login": "Đăng nhập",
-    "logout": "Đăng xuất",
-    "search-placeholder": "Tìm kiếm ...",
-    "studentID": "Mã số sinh viên",
-    "password": "Mật khẩu",
-    "remember": "Ghi nhớ đăng nhập",
-    "forgot-password": "Quên mật khẩu?",
-    "new-post": {
-        "title": "Bài viết mới",
-        "description": "Các bài viết mới nhất"
-    },
-    "hot-post": {
-        "title": "Bài viết hot",
-        "description": "Các bài viết được thích nhiều nhất"
-    },
-    "following-post": {
-        "title": "Bài viết following",
-        "description": "Các bài viết của người được bạn theo dõi"
-    },
-    "liked-post": {
-        "title": "Bài viết đã thích",
-        "description": "Các bài viết bạn đã thích"
-    },
-    "like": "Thích",
-    "comment": "Bình luận",
-    "comment-count": "bình luận",
-    "choose-chat" : {
-        "title": "Chọn một cuộc trò chuyện",
-        "description": "Chọn từ danh sách bên trái để bắt đầu nhắn tin"
-    },
-    "user-online": "Đang hoạt động",
-    "user-offline": "Không hoạt động",
-    "cancel": "Hủy",
-    "create": "Tạo",
-    "create-group": "Tạo nhóm chat",
-    "group-name": "Tên nhóm",
-    "group-members": ":members thành viên",
-    "enter-group-name": "Nhập tên nhóm ...",
-    "add-members": "Thêm thành viên",
-    "follow": "Theo dõi"
+  "profile": "Trang cá nhân",
+  "setting": "Cài đặt",
+  "login": "Đăng nhập",
+  "logout": "Đăng xuất",
+  "search-placeholder": "Tìm kiếm ...",
+  "studentID": "Mã số sinh viên",
+  "password": "Mật khẩu",
+  "remember": "Ghi nhớ đăng nhập",
+  "forgot-password": "Quên mật khẩu?",
+  "new-post": {
+    "title": "Bài viết mới",
+    "description": "Các bài viết mới nhất"
+  },
+  "hot-post": {
+    "title": "Bài viết hot",
+    "description": "Các bài viết được thích nhiều nhất"
+  },
+  "following-post": {
+    "title": "Bài viết following",
+    "description": "Các bài viết của người được bạn theo dõi"
+  },
+  "liked-post": {
+    "title": "Bài viết đã thích",
+    "description": "Các bài viết bạn đã thích"
+  },
+  "like": "Thích",
+  "comment": "Bình luận",
+  "comment-count": "bình luận",
+  "choose-chat": {
+    "title": "Chọn một cuộc trò chuyện",
+    "description": "Chọn từ danh sách bên trái để bắt đầu nhắn tin"
+  },
+  "user-online": "Đang hoạt động",
+  "user-offline": "Không hoạt động",
+  "cancel": "Hủy",
+  "create": "Tạo",
+  "create-group": "Tạo nhóm chat",
+  "group-name": "Tên nhóm",
+  "group-members": ":members thành viên",
+  "enter-group-name": "Nhập tên nhóm ...",
+  "add-members": "Thêm thành viên",
+  "follow": "Theo dõi"
 }

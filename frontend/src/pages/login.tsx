@@ -6,106 +6,113 @@ import { InputField, SubmitButton, Divider } from '../components/common';
 import { t } from 'i18next';
 
 const Login: React.FC = () => {
-    const [studentId, setStudentId] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const { login, error } = useAuth();
+  const [studentId, setStudentId] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { login, error } = useAuth();
 
-    const handleLogin = async (_e: React.MouseEvent<HTMLButtonElement>) => {
-        await login(import.meta.env.VITE_APP_LOGIN_ENDPOINT, { studentId, password });
-    };
+  const handleLogin = async (_e: React.MouseEvent<HTMLButtonElement>) => {
+    await login(import.meta.env.VITE_APP_LOGIN_ENDPOINT, {
+      studentId,
+      password,
+    });
+  };
 
-    const handleGgLogin = () => {
-        google.accounts.id.initialize({
-            client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
-            callback: (response: any) => {
-                const credential = response.credential;
+  const handleGgLogin = () => {
+    google.accounts.id.initialize({
+      client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
+      callback: (response: any) => {
+        const credential = response.credential;
 
-                login(import.meta.env.VITE_APP_GOOGLE_LOGIN_ENDPOINT, { token: credential });
-            },
-            auto_select: false,
-            cancel_on_tap_outside: true,
+        login(import.meta.env.VITE_APP_GOOGLE_LOGIN_ENDPOINT, {
+          token: credential,
         });
+      },
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    });
 
-        google.accounts.id.prompt((notification: any) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                google.accounts.id.prompt();
-            }
-        });
-    };
+    google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        google.accounts.id.prompt();
+      }
+    });
+  };
 
-    return (
-        <div className='min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100 flex items-center justify-center p-4'>
-            <div className='w-full max-w-md'>
-                <div className='bg-white rounded-2xl shadow-2xl p-8 border-t-4 border-red-600'>
-                    <LoginHeader />
+  return (
+    <div className='min-h-screen bg-gradient-to-br from-red-50 via-white to-red-100 flex items-center justify-center p-4'>
+      <div className='w-full max-w-md'>
+        <div className='bg-white rounded-2xl shadow-2xl p-8 border-t-4 border-red-600'>
+          <LoginHeader />
 
-                    <div className='space-y-6'>
-                        <InputField
-                            label={t('studentID')}
-                            focusColor='ring-red-600'
-                            value={studentId}
-                            onChange={(e) => setStudentId(e.target.value)}
-                            placeholder='000000'
-                            icon={User}
-                        />
+          <div className='space-y-6'>
+            <InputField
+              label={t('studentID')}
+              focusColor='ring-red-600'
+              value={studentId}
+              onChange={(e) => setStudentId(e.target.value)}
+              placeholder='000000'
+              icon={User}
+            />
 
-                        <InputField
-                            label={t('password')}
-                            type='password'
-                            focusColor='ring-red-600'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder='••••••••'
-                            icon={Lock}
-                            showPasswordToggle={true}
-                            showPassword={showPassword}
-                            onTogglePassword={() => setShowPassword(!showPassword)}
-                        />
+            <InputField
+              label={t('password')}
+              type='password'
+              focusColor='ring-red-600'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder='••••••••'
+              icon={Lock}
+              showPasswordToggle={true}
+              showPassword={showPassword}
+              onTogglePassword={() => setShowPassword(!showPassword)}
+            />
 
-                        {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
+            {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
 
-                        <div className='flex items-center justify-between'>
-                            <label className='flex items-center'>
-                                <input
-                                    type='checkbox'
-                                    className='w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500'
-                                />
-                                <span className='ml-2 text-sm text-gray-600'>{t('remember')}</span>
-                            </label>
-                            <a
-                                href='#'
-                                className='text-sm text-red-600 hover:text-red-700 font-medium'
-                            >
-                                {t('forgot-password')}
-                            </a>
-                        </div>
-
-                        <SubmitButton
-                            onClick={handleLogin}
-                            label={t('login')}
-                            color='from-red-600 to-red-700'
-                            hoverColor='hover:from-red-700 hover:to-red-800'
-                            textColor='text-white'
-                        />
-                    </div>
-
-                    <Divider />
-
-                    <div className='mt-6'>
-                        <SocialLoginButton onCLick={() => handleGgLogin()} />
-                    </div>
-
-                    <div className='mt-6 pt-6 border-t border-gray-200 text-center'>
-                        <p className='text-xs text-gray-500'>
-                            © 2024 Duy Tan University. All rights reserved.
-                        </p>
-                    </div>
-                </div>
+            <div className='flex items-center justify-between'>
+              <label className='flex items-center'>
+                <input
+                  type='checkbox'
+                  className='w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500'
+                />
+                <span className='ml-2 text-sm text-gray-600'>
+                  {t('remember')}
+                </span>
+              </label>
+              <a
+                href='#'
+                className='text-sm text-red-600 hover:text-red-700 font-medium'
+              >
+                {t('forgot-password')}
+              </a>
             </div>
-            <script src='https://accounts.google.com/gsi/client' async defer></script>
+
+            <SubmitButton
+              onClick={handleLogin}
+              label={t('login')}
+              color='from-red-600 to-red-700'
+              hoverColor='hover:from-red-700 hover:to-red-800'
+              textColor='text-white'
+            />
+          </div>
+
+          <Divider />
+
+          <div className='mt-6'>
+            <SocialLoginButton onCLick={() => handleGgLogin()} />
+          </div>
+
+          <div className='mt-6 pt-6 border-t border-gray-200 text-center'>
+            <p className='text-xs text-gray-500'>
+              © 2024 Duy Tan University. All rights reserved.
+            </p>
+          </div>
         </div>
-    );
+      </div>
+      <script src='https://accounts.google.com/gsi/client' async defer></script>
+    </div>
+  );
 };
 
 export default Login;

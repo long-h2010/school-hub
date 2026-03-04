@@ -1,18 +1,19 @@
 import type { Post } from '../../../types/post';
+import PostImages from './post-images';
 
 interface Props {
-    post: Post;
+  post: Post;
 }
 
 const PostContent: React.FC<Props> = ({ post }) => {
-    return (
-        <>
-            <div className='px-4 pb-3'>
-                <p className='text-sm'>{post.content}</p>
-            </div>
-            {post.image && <img src={post.image} alt='Post' className='w-full' />}
-        </>
-    );
+  return (
+    <>
+      <div className='px-4 pb-3'>
+        <p className='text-sm'>{post.content}</p>
+      </div>
+      {post.images && <PostImages images={post.images} />}
+    </>
+  );
 };
 
 export default PostContent;

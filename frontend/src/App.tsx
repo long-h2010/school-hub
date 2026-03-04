@@ -18,41 +18,44 @@ import Settings from './pages/admin/settings';
 import NotFound from './pages/not-found';
 
 function App() {
-    useEffect(() => {
-        document.title = 'DTU Hub';
-    }, []);
+  useEffect(() => {
+    document.title = 'DTU Hub';
+  }, []);
 
-    return (
-        <BrowserRouter>
-            <AuthProvider>
-                <SocketProvider>
-                    <Suspense>
-                        <Routes>
-                            <Route path='/login' element={<Login />} />
-                            <Route element={<ProtectedRoute />}>
-                                <Route element={<MainLayout />}>
-                                    <Route path='/' element={<Home />} />
-                                    <Route path='/chat' element={<Messenger />} />
-                                    <Route path='/profile/:id' element={<Profile />} />
-                                    <Route path='/me' element={<Profile />} />
-                                </Route>
-                            </Route>
-                            <Route path='/admin' element={<ProtectedRoute requiredRole='admin' />}>
-                                <Route element={<AdminLayout />}>
-                                    <Route index element={<Dashboard />} />
-                                    <Route path='analytics' element={<Analytics />} />
-                                    <Route path='users' element={<Users />} />
-                                    <Route path='moderation' element={<Moderation />} />
-                                    <Route path='settings' element={<Settings />} />
-                                </Route>
-                            </Route>
-                            <Route path='*' element={<NotFound />} />
-                        </Routes>
-                    </Suspense>
-                </SocketProvider>
-            </AuthProvider>
-        </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <SocketProvider>
+          <Suspense>
+            <Routes>
+              <Route path='/login' element={<Login />} />
+              <Route element={<ProtectedRoute />}>
+                <Route element={<MainLayout />}>
+                  <Route path='/' element={<Home />} />
+                  <Route path='/chat' element={<Messenger />} />
+                  <Route path='/profile/:id' element={<Profile />} />
+                  <Route path='/me' element={<Profile />} />
+                </Route>
+              </Route>
+              <Route
+                path='/admin'
+                element={<ProtectedRoute requiredRole='admin' />}
+              >
+                <Route element={<AdminLayout />}>
+                  <Route index element={<Dashboard />} />
+                  <Route path='analytics' element={<Analytics />} />
+                  <Route path='users' element={<Users />} />
+                  <Route path='moderation' element={<Moderation />} />
+                  <Route path='settings' element={<Settings />} />
+                </Route>
+              </Route>
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </SocketProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
 export default App;
