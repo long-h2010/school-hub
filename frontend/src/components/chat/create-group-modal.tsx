@@ -50,6 +50,10 @@ const CreateGroupModal: React.FC<Props> = ({ users, setShowCreateGroup }) => {
                 width='w-full'
                 rounded='rounded-xl'
                 focus='ring-blue-500'
+                value={''}
+                setValue={function (): void {
+                  throw new Error('Function not implemented.');
+                }}
               />
             </div>
             <div className='space-y-2 max-h-48 overflow-y-auto'>

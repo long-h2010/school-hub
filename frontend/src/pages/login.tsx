@@ -5,6 +5,15 @@ import { useAuth } from '../contexts/auth-context';
 import { InputField, SubmitButton, Divider } from '../components/common';
 import { t } from 'i18next';
 
+declare const google: {
+  accounts: {
+    id: {
+      initialize: (config: any) => void;
+      prompt: (callback?: (notification: any) => void) => void;
+    };
+  };
+};
+
 const Login: React.FC = () => {
   const [studentId, setStudentId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
