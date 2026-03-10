@@ -20,6 +20,13 @@ const client = new OAuth2Client(
   process.env.GOOGLE_SECRET,
 );
 
+const cookieOptions: any = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+  path: '/api/auth/refresh-token',
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -34,12 +41,7 @@ export class AuthController {
     const { accessToken, refreshToken, user } =
       await this.authService.login(loginDto);
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/api/auth/refresh-token',
-    });
+    res.cookie('refreshToken', refreshToken, cookieOptions);
 
     return res.json({ accessToken, user });
   }
@@ -58,12 +60,7 @@ export class AuthController {
     const { accessToken, refreshToken, user } =
       await this.authService.googleLogin(payload);
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/api/auth/refresh-token',
-    });
+    res.cookie('refreshToken', refreshToken, cookieOptions);
 
     return res.json({ accessToken, user });
   }
