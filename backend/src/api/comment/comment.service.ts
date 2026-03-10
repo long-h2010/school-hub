@@ -1,7 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Comment } from 'src/entity-schemas/comment.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { PostService } from 'src/api/post/post.service';
 import { ReplyCommentDto } from './dto/reply-comment.dto';
@@ -42,6 +39,16 @@ export class CommentService {
     return await this.commentRepository.findMany({
       filter: { post: postId },
       sort: { createdAt: -1 },
+      populate: [
+        { path: 'owner', select: '_id name avatar' },
+        {
+          path: 'replies',
+          populate: [
+            { path: 'user', select: '_id name avatar' },
+            { path: 'replyTo', select: '_id name avatar' },
+          ],
+        },
+      ],
     });
   }
 

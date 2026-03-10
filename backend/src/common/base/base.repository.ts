@@ -24,9 +24,9 @@ export class BaseRepository<T> {
     return await this.model.find().exec();
   }
 
-  async findOne(query: FilterQuery<T>, select?: string) {
+  async findOne(query: FilterQuery<T>, select?: string, throwException: boolean = true) {
     const user = await this.model.findOne(query).select(select).exec();
-    if (!user) throw new NotFoundException('Resource not found');
+    if (!user && throwException) throw new NotFoundException('Resource not found');
     return user;
   }
 

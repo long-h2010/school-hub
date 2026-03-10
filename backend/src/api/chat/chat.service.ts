@@ -18,10 +18,14 @@ export class ChatService {
     const userIds = data.members.map((m) => m.user);
 
     if (membersLength == 2) {
-      const chat = await this.chatRepository.findOne({
-        'members.user': { $all: userIds },
-        'members.2': { $exists: false },
-      });
+      const chat = await this.chatRepository.findOne(
+        {
+          'members.user': { $all: userIds },
+          'members.2': { $exists: false },
+        },
+        '',
+        false,
+      );
 
       if (chat) return chat;
     }
@@ -43,9 +47,7 @@ export class ChatService {
   async updateLastMessage(chatId: string, messageId: string) {
     return await this.chatRepository.update(
       { _id: chatId },
-      {
-        lastMessage: messageId,
-      },
+      { lastMessage: messageId },
     );
   }
 
