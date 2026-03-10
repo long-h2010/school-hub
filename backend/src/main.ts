@@ -13,6 +13,6 @@ async function bootstrap() {
   });
   app.useWebSocketAdapter(new SocketIoAdapter(app, app.get(JwtService)))
   app.setGlobalPrefix('api');
-  await app.listen(parseInt(process.env.PORT) || 3000);
+  await app.listen(parseInt(process.env.PORT) || 3000, '0.0.0.0');
 }
 bootstrap();
