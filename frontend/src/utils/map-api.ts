@@ -1,4 +1,6 @@
 import type { Chat, Message } from '../types/chat';
+import type { Comment } from '../types/comment';
+import type { Post } from '../types/post';
 
 export const mapUserApi = (user: any) => {
   return {
@@ -7,7 +9,7 @@ export const mapUserApi = (user: any) => {
   };
 };
 
-export const mapPostApi = (post: any) => {
+export const mapPostApi = (post: any): Post => {
   return {
     id: post._id,
     author: post.author.name,
@@ -19,6 +21,23 @@ export const mapPostApi = (post: any) => {
     comments: post.comments,
     liked: post.liked || false,
     isHot: post.isHot || false,
+  };
+};
+
+export const mapCommentApi = (cmt: any): Comment => {
+  return {
+    id: cmt._id,
+    owner: {
+      id: cmt.owner._id,
+      name: cmt.owner.name,
+      avatar: cmt.owner.avatar,
+    },
+    content: cmt.content,
+    likeCounting: cmt.likeCounting,
+    replyCounting: cmt.replyCounting,
+    replies: cmt.replies,
+    liked: cmt.liked,
+    createdAt: cmt.createdAt,
   };
 };
 

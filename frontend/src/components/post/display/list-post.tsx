@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import AxiosClient from '../../api/axios-client';
-import { mapPostApi } from '../../utils/map-api';
-import type { Post } from '../../types/post';
-import { PostCard } from './card';
-import { PostDetail } from './detail';
 import { Image } from 'lucide-react';
+import AxiosClient from '../../../api/axios-client';
+import type { Post } from '../../../types/post';
+import { mapPostApi } from '../../../utils/map-api';
+import { PostCard } from '../card';
+import PostDetail from './post-detail';
 
 interface Props {
   getPostsApi: string;
@@ -22,7 +22,6 @@ const ListPost: React.FC<Props> = ({ getPostsApi, newPost }) => {
   }, [newPost]);
 
   const handleGetFeed = async ({ pageParam = 1, limit = 15 }) => {
-    console.log(`${getPostsApi}?page=${pageParam}&limit=${limit}`);
     const res = await AxiosClient.get(
       `${getPostsApi}?page=${pageParam}&limit=${limit}`,
     );

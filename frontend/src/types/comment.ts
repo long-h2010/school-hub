@@ -1,9 +1,9 @@
-interface Reply {
-  id?: string;
+export interface Reply {
+  id: string;
   user: {
     id: string;
     name: string;
-    avatar?: string;
+    avatar: string;
   };
   replyTo?: {
     id: string;
@@ -25,6 +25,7 @@ export interface Comment {
   content: string;
   likeCounting: number;
   replyCounting: number;
+  showReply?: boolean;
   replies: Reply[];
   liked: boolean;
   createdAt: string;

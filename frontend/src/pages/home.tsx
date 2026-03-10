@@ -6,8 +6,8 @@ import useNewPost from '../hooks/use-newpost';
 import { MainSidebar } from '../components/layout';
 import { CreatePostButton, CreatePostModal } from '../components/post/create';
 import type { Post, TabType } from '../types/post';
-import ListPost from '../components/post/list-post';
 import { mapPostApi } from '../utils/map-api';
+import { ListPost } from '../components/post/display';
 
 const Home = () => {
   const { user } = useAuth();

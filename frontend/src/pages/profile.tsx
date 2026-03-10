@@ -4,7 +4,7 @@ import type { User } from '../types/user';
 import AxiosClient from '../api/axios-client';
 import { SubmitButton } from '../components/common';
 import { useAuth } from '../contexts/auth-context';
-import ListPost from '../components/post/list-post';
+import { ListPost } from '../components/post/display';
 
 const Profile = () => {
   const params = useParams();

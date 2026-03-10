@@ -39,9 +39,7 @@ const UserTable: React.FC<{
             >
               <td className='py-4 px-6'>
                 <div className='flex items-center gap-3'>
-                  <div className='w-11 h-11 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg'>
-                    {user.name.charAt(0)}
-                  </div>
+                  <img src={user.avatar} alt={user.name} className='w-11 h-11 rounded-xl' />
                   <div>
                     <p className='font-semibold text-gray-900'>{user.name}</p>
                     <p className='text-xs text-gray-500 flex items-center gap-1'>

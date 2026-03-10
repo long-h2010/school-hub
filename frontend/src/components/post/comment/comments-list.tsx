@@ -1,5 +1,7 @@
 import { Heart } from 'lucide-react';
 import { TextButton } from '../../common';
+import type { Comment, Reply } from '../../../types/comment';
+import CommentInput from './comment-input';
 
 interface Props {
   comments: any[];
@@ -12,6 +14,7 @@ interface Props {
   handleToggleReply: (commentId: string) => void;
   replyText: string;
   setReplyText: (text: string) => void;
+  handleReply: (commentId: string) => void;
 }
 
 const CommentsList: React.FC<Props> = ({
@@ -21,30 +24,31 @@ const CommentsList: React.FC<Props> = ({
   handleToggleReply,
   replyText,
   setReplyText,
+  handleReply,
 }) => {
   return (
     <div className='space-y-4'>
       {comments && comments.length > 0 ? (
-        comments.map((comment) => (
+        comments.map((comment: Comment) => (
           <div key={comment.id} className='space-y-2'>
             <div className='flex items-start space-x-2'>
               <img
-                src={comment.avatar}
-                alt={comment.author}
+                src={comment.owner.avatar}
+                alt={comment.owner.name}
                 className='w-8 h-8 rounded-full'
               />
               <div className='flex-1'>
                 <div className='relative inline-block'>
                   <div className='bg-gray-100 rounded-2xl px-4 py-2'>
-                    <h4 className='font-semibold text-sm'>{comment.author}</h4>
+                    <h4 className='font-semibold text-sm'>{comment.owner.name}</h4>
                     <p className='text-sm'>{comment.content}</p>
                   </div>
                   {/* Like Badge on Comment Bubble */}
-                  {comment.likes > 0 && (
+                  {comment.likeCounting > 0 && (
                     <div className='absolute -bottom-2 -right-1 bg-white rounded-full shadow-md px-2 py-0.5 flex items-center space-x-1 border border-gray-200'>
                       <Heart className='w-3 h-3 text-red-500 fill-red-500' />
                       <span className='text-xs font-medium text-gray-700'>
-                        {comment.likes}
+                        {comment.likeCounting}
                       </span>
                     </div>
                   )}
@@ -62,7 +66,7 @@ const CommentsList: React.FC<Props> = ({
                       handleToggleReply(comment.id);
                     }}
                   />
-                  <span className='text-xs text-gray-500'>{comment.time}</span>
+                  <span className='text-xs text-gray-500'>{comment.createdAt}</span>
                 </div>
 
                 {/* View Replies Link */}
@@ -79,36 +83,35 @@ const CommentsList: React.FC<Props> = ({
                   </button>
                 )}
 
-                {/* Reply Input */}
                 {comment.showReply && (
                   <div className='mt-2'>
                     {/* Replies First */}
                     {comment.replies && comment.replies.length > 0 && (
                       <div className='ml-10 mb-3 space-y-3'>
-                        {comment.replies.map((reply) => (
+                        {comment.replies.map((reply: Reply) => (
                           <div
                             key={reply.id}
                             className='flex items-start space-x-2'
                           >
                             <img
-                              src={reply.avatar}
-                              alt={reply.author}
+                              src={reply.user.avatar}
+                              alt={reply.user.name}
                               className='w-7 h-7 rounded-full'
                             />
                             <div className='flex-1'>
                               <div className='relative inline-block'>
                                 <div className='bg-gray-100 rounded-2xl px-3 py-2'>
                                   <h4 className='font-semibold text-xs'>
-                                    {reply.author}
+                                    {reply.user.name}
                                   </h4>
                                   <p className='text-sm'>{reply.content}</p>
                                 </div>
                                 {/* Like Badge on Reply Bubble */}
-                                {reply.likes > 0 && (
+                                {reply.likeCounting > 0 && (
                                   <div className='absolute -bottom-2 -right-1 bg-white rounded-full shadow-md px-2 py-0.5 flex items-center space-x-1 border border-gray-200'>
                                     <Heart className='w-3 h-3 text-red-500 fill-red-500' />
                                     <span className='text-xs font-medium text-gray-700'>
-                                      {reply.likes}
+                                      {reply.likeCounting}
                                     </span>
                                   </div>
                                 )}
@@ -131,7 +134,7 @@ const CommentsList: React.FC<Props> = ({
                                   Thích
                                 </button>
                                 <span className='text-xs text-gray-500'>
-                                  {reply.time}
+                                  {reply.createdAt}
                                 </span>
                               </div>
                             </div>
@@ -140,31 +143,7 @@ const CommentsList: React.FC<Props> = ({
                       </div>
                     )}
 
-                    {/* Reply Input Box */}
-                    <div className='flex items-start space-x-2 ml-4'>
-                      <img
-                        src='https://ui-avatars.com/api/?name=Ban&background=4267B2&color=fff'
-                        alt='Avatar'
-                        className='w-7 h-7 rounded-full'
-                      />
-                      <div className='flex-1'>
-                        <div className='bg-gray-100 rounded-2xl px-3 py-2'>
-                          <input
-                            type='text'
-                            placeholder={`Trả lời ${comment.author}...`}
-                            className='w-full bg-transparent outline-none text-sm'
-                            value={replyText}
-                            onChange={(e) => setReplyText(e.target.value)}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter' && replyText.trim()) {
-                                ('');
-                              }
-                            }}
-                            autoFocus
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    <CommentInput value={replyText} onChange={setReplyText} onSubmit={() => handleReply(comment.id)} />
                   </div>
                 )}
               </div>
