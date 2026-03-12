@@ -54,7 +54,7 @@ export class UserService {
     return await this.userRepository.findOne({ email: email });
   }
 
-  async findByStudentId(studentId: string) {
-    return await this.userRepository.findOne({ studentId: studentId }, '+password');
+  async findByUsername(username: string) {
+    return await this.userRepository.findOne({ username: username }, '+password', false);
   }
 }

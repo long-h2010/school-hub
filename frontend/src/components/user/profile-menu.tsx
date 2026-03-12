@@ -9,15 +9,13 @@ const ProfileMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
 
-  const avatar = user?.avatar || '/default-avatar.png';
-
   return (
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className='flex items-center space-x-2 hover:bg-gray-100 rounded-full p-1'
       >
-        <img src={avatar} alt='Avatar' className='w-8 h-8 rounded-full' />
+        <img src={user.avatar} alt='Avatar' className='w-8 h-8 rounded-full' />
       </button>
 
       {isOpen && (
@@ -30,12 +28,12 @@ const ProfileMenu: React.FC = () => {
             <div className='p-4'>
               <div className='flex items-center space-x-3'>
                 <img
-                  src={avatar}
+                  src={user.avatar}
                   alt='Avatar'
                   className='w-12 h-12 rounded-full'
                 />
                 <div>
-                  <h3 className='font-semibold'>Bạn</h3>
+                  <h3 className='font-semibold'>{user.name}</h3>
                   <p className='text-sm text-gray-500'>Xem trang cá nhân</p>
                 </div>
               </div>

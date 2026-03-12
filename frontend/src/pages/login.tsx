@@ -15,14 +15,14 @@ declare const google: {
 };
 
 const Login: React.FC = () => {
-  const [studentId, setStudentId] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { login, error } = useAuth();
 
   const handleLogin = async (_e: React.MouseEvent<HTMLButtonElement>) => {
     await login(import.meta.env.VITE_APP_LOGIN_ENDPOINT, {
-      studentId,
+      username,
       password,
     });
   };
@@ -56,10 +56,10 @@ const Login: React.FC = () => {
 
           <div className='space-y-6'>
             <InputField
-              label={t('studentID')}
+              label={t('username')}
               focusColor='ring-red-600'
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder='000000'
               icon={User}
             />
@@ -78,6 +78,15 @@ const Login: React.FC = () => {
             />
 
             {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
+
+            <div className='ml-auto'>
+              <a
+                href='/register'
+                className='text-sm text-red-600 hover:text-red-700 font-medium'
+              >
+                {t('register')}
+              </a>
+            </div>
 
             <div className='flex items-center justify-between'>
               <label className='flex items-center'>
@@ -110,12 +119,6 @@ const Login: React.FC = () => {
 
           <div className='mt-6'>
             <SocialLoginButton onCLick={() => handleGgLogin()} />
-          </div>
-
-          <div className='mt-6 pt-6 border-t border-gray-200 text-center'>
-            <p className='text-xs text-gray-500'>
-              © 2024 Duy Tan University. All rights reserved.
-            </p>
           </div>
         </div>
       </div>

@@ -35,15 +35,20 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const { studentId, name, password } = registerDto;
+    console.log(registerDto);
+    const { username, name, password, confirmPassword } = registerDto;
+
+    if (password !== confirmPassword)
+      throw new UnauthorizedException('Confirm password does not match');
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const existingUser = await this.userService.findByStudentId(studentId);
+    const existingUser = await this.userService.findByUsername(username);
     if (existingUser)
-      throw new UnauthorizedException('Student ID already exists');
+      throw new UnauthorizedException('Username already exists');
 
     const newUser = {
-      studentId: studentId,
+      username: username,
       name: name,
       password: hashedPassword,
     };
@@ -52,9 +57,9 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const { studentId, password } = loginDto;
+    const { username, password } = loginDto;
 
-    const user = await this.userService.findByStudentId(studentId);
+    const user = await this.userService.findByUsername(username);
     if (!user) throw new UnauthorizedException('Invalid credentials');
     if (user.status == UserStatus.banned)
       throw new UnauthorizedException('Account has been banned');
@@ -75,12 +80,13 @@ export class AuthService {
 
   async googleLogin(payload: any) {
     const email = payload.email;
-    const [studentId, verify] = email.split('@');
+    const [username, verify] = email.split('@');
 
-    if (verify != process.env.VERIFY_EMAIL)
+    const verifyEmail = process.env.VERIFY_EMAIL;
+    if (verify != verifyEmail && verifyEmail)
       throw new UnauthorizedException('Email is not accepted');
 
-    const user = await this.userService.findByStudentId(studentId);
+    const user = await this.userService.findByUsername(username);
 
     if (user) {
       const token = await this.generateToken(user._id.toString());
@@ -94,7 +100,7 @@ export class AuthService {
     } else {
       const data = {
         name: payload.name,
-        studentId: studentId,
+        username: username,
         email: email,
         avatar: payload.picture,
       };

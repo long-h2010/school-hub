@@ -52,21 +52,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     tryRefresh();
   }, []);
 
-  // const login = async (studentId: string, password: string) => {
-  //     await AxiosClient.post(import.meta.env.VITE_APP_LOGIN_ENDPOINT, {
-  //         studentId,
-  //         password,
-  //     })
-  //         .then((res) => {
-  //             const data = res.data;
-  //             setAccessToken(data.token);
-  //             setToken(data.token);
-  //             setUser(data.user);
-  //             window.location.href = '/';
-  //         })
-  //         .catch((error) => setError(error.response.data.message));
-  // };
-
   const login = async (loginEnpoint: string, data: any) => {
     await AxiosClient.post(loginEnpoint, data)
       .then((res) => {

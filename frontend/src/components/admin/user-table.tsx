@@ -50,7 +50,7 @@ const UserTable: React.FC<{
                 </div>
               </td>
               <td className='py-4 px-6 text-gray-600 font-medium'>
-                {user.email || `${user.studentId}@dtu.com`}
+                {user.email}
               </td>
               <td className='py-4 px-6'>
                 {user.status === 'active' && (

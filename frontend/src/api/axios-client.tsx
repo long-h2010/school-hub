@@ -37,7 +37,8 @@ AxiosClient.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      window.location.pathname !== '/login'
+      window.location.pathname !== '/login' &&
+      window.location.pathname !== '/register'
     ) {
       if (isRefreshing) {
         return new Promise((resolve) => {

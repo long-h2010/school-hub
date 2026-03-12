@@ -6,7 +6,7 @@ import UserStatus from 'src/common/enums/user-status.enum';
 @Schema({ timestamps: true })
 export class User {
     @Prop({ unique: true })
-    studentId: string;
+    username: string;
 
     @Prop({ select: false })
     password: string;

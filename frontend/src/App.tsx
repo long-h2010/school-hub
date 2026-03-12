@@ -7,6 +7,7 @@ import { SocketProvider } from './contexts/socket-context';
 import MainLayout from './layouts/main-layout';
 import AdminLayout from './layouts/admin-layout';
 import Login from './pages/login';
+import Register from './pages/register';
 import Home from './pages/home';
 import Messenger from './pages/messenger';
 import Profile from './pages/profile';
@@ -19,7 +20,7 @@ import NotFound from './pages/not-found';
 
 function App() {
   useEffect(() => {
-    document.title = 'DTU Hub';
+    document.title = 'Hub';
   }, []);
 
   return (
@@ -29,6 +30,7 @@ function App() {
           <Suspense>
             <Routes>
               <Route path='/login' element={<Login />} />
+              <Route path='/register' element={<Register />} />
               <Route element={<ProtectedRoute />}>
                 <Route element={<MainLayout />}>
                   <Route path='/' element={<Home />} />

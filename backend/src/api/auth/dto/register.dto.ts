@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 export class RegisterDto {
   @IsNotEmpty()
   @IsString()
-  studentId: string;
+  username: string;
 
   @IsNotEmpty()
   @IsString()
@@ -13,4 +13,6 @@ export class RegisterDto {
   @IsString()
   @MinLength(6, { message: 'Password must have at least 6 characters' })
   password: string;
+
+  confirmPassword: string;
 }
