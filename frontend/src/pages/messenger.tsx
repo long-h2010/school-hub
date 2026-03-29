@@ -11,8 +11,12 @@ import {
   DefaultDisplay,
 } from '../components/chat';
 import { mapChatApi, mapMessageApi } from '../utils/map-api';
+import { useAuth } from '../contexts/auth-context';
+import { useCall } from '../contexts/call-context';
 
 const Messenger: React.FC = () => {
+  const { user } = useAuth();
+  const { setCallStatus, setCallee } = useCall();
   const { socket, onlines } = useSocket();
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
@@ -169,53 +173,77 @@ const Messenger: React.FC = () => {
     scrollToBottom(false);
   }, [messages[selectedChat?.id || '']]);
 
+  const onClickCall = () => {
+    if (!selectedChat?.isGroup) {
+      setCallStatus('calling');
+      setCallee({
+        id: selectedChat?.otherUser,
+        name: selectedChat?.displayName,
+        avatar: selectedChat?.displayAvatar,
+      });
+
+      socket?.emit('calling', {
+        chatId: selectedChat?.id,
+        callee: selectedChat?.otherUser,
+        caller: {
+          id: user._id,
+          name: user.name,
+          avatar: user.avatar,
+        },
+      });
+    }
+  };
+
   return (
-    <div className='flex h-screen pt-14 bg-gradient-to-br from-gray-50 to-gray-100'>
-      <div className='w-96 bg-white border-r border-gray-200 flex flex-col shadow-sm'>
-        <div className='p-6 border-b border-gray-200'>
-          <div className='flex items-center justify-between mb-4'>
-            <SearchField width='w-52' value={''} setValue={() => {}} />
-            <IconButton
-              icon={Users}
-              hover={true}
-              onClick={() => setShowCreateGroup(true)}
-            />
+    <>
+      <div className='flex h-screen pt-14 bg-gradient-to-br from-gray-50 to-gray-100'>
+        <div className='w-96 bg-white border-r border-gray-200 flex flex-col shadow-sm'>
+          <div className='p-6 border-b border-gray-200'>
+            <div className='flex items-center justify-between mb-4'>
+              <SearchField width='w-52' value={''} setValue={() => {}} />
+              <IconButton
+                icon={Users}
+                hover={true}
+                onClick={() => setShowCreateGroup(true)}
+              />
+            </div>
+          </div>
+
+          <div className='flex-1 overflow-y-auto'>
+            {conversation.map((chat) => (
+              <Conversation
+                key={chat.id}
+                chat={chat}
+                active={selectedChat?.id === chat.id}
+                onClick={() => handleSelectChat(chat)}
+              />
+            ))}
           </div>
         </div>
 
-        <div className='flex-1 overflow-y-auto'>
-          {conversation.map((chat) => (
-            <Conversation
-              key={chat.id}
-              chat={chat}
-              active={selectedChat?.id === chat.id}
-              onClick={() => handleSelectChat(chat)}
-            />
-          ))}
-        </div>
+        {selectedChat ? (
+          <ChatDisplay
+            chat={selectedChat}
+            loading={msgLoading}
+            messages={messages[selectedChat.id]}
+            messageInput={messageInput}
+            setMessageInput={setMessageInput}
+            handleSendMessage={handleSendMessage}
+            ref={ref}
+            onCall={onClickCall}
+          />
+        ) : (
+          <DefaultDisplay />
+        )}
+
+        {showCreateGroup && (
+          <CreateGroupModal
+            users={chats}
+            setShowCreateGroup={setShowCreateGroup}
+          />
+        )}
       </div>
-
-      {selectedChat ? (
-        <ChatDisplay
-          chat={selectedChat}
-          loading={msgLoading}
-          messages={messages[selectedChat.id]}
-          messageInput={messageInput}
-          setMessageInput={setMessageInput}
-          handleSendMessage={handleSendMessage}
-          ref={ref}
-        />
-      ) : (
-        <DefaultDisplay />
-      )}
-
-      {showCreateGroup && (
-        <CreateGroupModal
-          users={chats}
-          setShowCreateGroup={setShowCreateGroup}
-        />
-      )}
-    </div>
+    </>
   );
 };
 

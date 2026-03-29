@@ -12,15 +12,21 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
 
   const handleRegister = async () => {
     await AxiosClient.post(import.meta.env.VITE_APP_REGISTER_ENDPOINT, {
       username,
       name,
       password,
-      confirmPassword
+      confirmPassword,
     })
-      .then(() => (window.location.href = '/login'))
+      .then(() => {
+        setSuccess('Register successfull');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1000);
+      })
       .catch((e) => setError(e.response.data.message));
   };
 
@@ -77,8 +83,11 @@ const Register: React.FC = () => {
               />
 
               {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
+              {success && (
+                <p className='mt-1 text-sm text-green-500'>{success}</p>
+              )}
 
-              <div className='ml-auto'>
+              <div className=''>
                 <a
                   href='/login'
                   className='text-sm text-red-600 hover:text-red-700 font-medium'

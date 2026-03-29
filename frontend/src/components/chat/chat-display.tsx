@@ -13,6 +13,7 @@ interface Props {
   setMessageInput: (value: string) => void;
   handleSendMessage: (id: string) => void;
   ref: Ref<HTMLDivElement | null>;
+  onCall: () => void;
 }
 
 const ChatDisplay: React.FC<Props> = ({
@@ -23,10 +24,11 @@ const ChatDisplay: React.FC<Props> = ({
   setMessageInput,
   handleSendMessage,
   ref,
+  onCall
 }) => {
   return (
     <div className='flex-1 flex flex-col bg-white'>
-      <ChatHeader chat={chat} />
+      <ChatHeader chat={chat} onCall={onCall} />
 
       {loading ? (
         <SkeletonLoading />

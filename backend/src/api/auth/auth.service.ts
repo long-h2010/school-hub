@@ -35,7 +35,6 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    console.log(registerDto);
     const { username, name, password, confirmPassword } = registerDto;
 
     if (password !== confirmPassword)

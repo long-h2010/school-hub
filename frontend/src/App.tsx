@@ -4,6 +4,7 @@ import './i18n';
 import ProtectedRoute from './guards/protected-route';
 import { AuthProvider } from './contexts/auth-context';
 import { SocketProvider } from './contexts/socket-context';
+import { CallProvider } from './contexts/call-context';
 import MainLayout from './layouts/main-layout';
 import AdminLayout from './layouts/admin-layout';
 import Login from './pages/login';
@@ -17,6 +18,7 @@ import Users from './pages/admin/users';
 import Moderation from './pages/admin/moderation';
 import Settings from './pages/admin/settings';
 import NotFound from './pages/not-found';
+import { GlobalCall } from './components/videocall';
 
 function App() {
   useEffect(() => {
@@ -26,35 +28,38 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <SocketProvider>
-          <Suspense>
-            <Routes>
-              <Route path='/login' element={<Login />} />
-              <Route path='/register' element={<Register />} />
-              <Route element={<ProtectedRoute />}>
-                <Route element={<MainLayout />}>
-                  <Route path='/' element={<Home />} />
-                  <Route path='/chat' element={<Messenger />} />
-                  <Route path='/profile/:id' element={<Profile />} />
-                  <Route path='/me' element={<Profile />} />
+        <CallProvider>
+          <SocketProvider>
+            <Suspense>
+              <Routes>
+                <Route path='/login' element={<Login />} />
+                <Route path='/register' element={<Register />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<MainLayout />}>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/chat' element={<Messenger />} />
+                    <Route path='/profile/:id' element={<Profile />} />
+                    <Route path='/me' element={<Profile />} />
+                  </Route>
                 </Route>
-              </Route>
-              <Route
-                path='/admin'
-                element={<ProtectedRoute requiredRole='admin' />}
-              >
-                <Route element={<AdminLayout />}>
-                  <Route index element={<Dashboard />} />
-                  <Route path='analytics' element={<Analytics />} />
-                  <Route path='users' element={<Users />} />
-                  <Route path='moderation' element={<Moderation />} />
-                  <Route path='settings' element={<Settings />} />
+                <Route
+                  path='/admin'
+                  element={<ProtectedRoute requiredRole='admin' />}
+                >
+                  <Route element={<AdminLayout />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path='analytics' element={<Analytics />} />
+                    <Route path='users' element={<Users />} />
+                    <Route path='moderation' element={<Moderation />} />
+                    <Route path='settings' element={<Settings />} />
+                  </Route>
                 </Route>
-              </Route>
-              <Route path='*' element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </SocketProvider>
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </Suspense>
+            <GlobalCall />
+          </SocketProvider>
+        </CallProvider>
       </AuthProvider>
     </BrowserRouter>
   );

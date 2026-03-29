@@ -46,7 +46,6 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody('chatIds') chatIds: string[],
   ) {
     chatIds.forEach((id) => client.join(`chat:${id}`));
-    console.log(`User join all chats`);
   }
 
   @SubscribeMessage('send-message')
@@ -65,8 +64,21 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       body.chatId,
       sendMsgData,
     );
+
     this.server
       .to(`chat:${message.chat.toString()}`)
       .emit('new-message', message);
+  }
+
+  @SubscribeMessage('calling')
+  async handleCalling(@MessageBody() body: any) {
+    this.server
+      .to(`user:${body.callee}`)
+      .emit('ringing', { room: body.chatId, caller: body.caller });
+  }
+
+  @SubscribeMessage('accept-call')
+  async handleAcceptCall(@MessageBody() body: any) {
+    this.server.to(`user:${body.caller}`).emit('callee-accept');
   }
 }

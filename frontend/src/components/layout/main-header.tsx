@@ -49,7 +49,7 @@ const MainHeader: React.FC = () => {
 
   return (
     <header className='bg-white shadow-sm fixed top-0 w-full z-50'>
-      <div className='max-w-7xl mx-auto px-4'>
+      <div className='w-full px-10 mx-auto px-4'>
         <div className='flex items-center justify-between h-14'>
           <div className='flex items-center space-x-2'>
             <div className='flex items-center space-x-2 mr-4' onClick={() => navigate('/')}>

@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './auth-context';
+import { useCall } from './call-context';
 
 interface SocketContextType {
   socket: Socket | null;
@@ -11,6 +12,8 @@ const SocketContext = createContext<SocketContextType | null>(null);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { token, isAuthenticated } = useAuth();
+  const { callStatus, setCallStatus, setIncomingCall } =
+    useCall();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [onlines, setOnlines] = useState<string[]>([]);
 
@@ -21,7 +24,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    // Khởi tạo socket mới với token
     const newSocket = io(import.meta.env.VITE_APP_SOCKET_URL, {
       auth: { token },
       autoConnect: true,
@@ -39,10 +41,24 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       setOnlines((prev) => prev.filter((id) => id !== userId));
     });
 
+    newSocket.on('ringing', (data) => {
+      if (callStatus !== 'idle') {
+        newSocket.emit('call-busy');
+        return;
+      }
+
+      setCallStatus('ringing')
+      setIncomingCall(data);
+    });
+
+    newSocket.on('callee-accept', () => {
+      setCallStatus('in-call')
+    })
+
     setSocket(newSocket);
 
     return () => {
-      // newSocket.removeAllListeners();
+      newSocket.removeAllListeners();
       newSocket.disconnect();
     };
   }, [token, isAuthenticated]);

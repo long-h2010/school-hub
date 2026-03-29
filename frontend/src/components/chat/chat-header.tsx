@@ -5,9 +5,10 @@ import { t } from 'i18next';
 
 interface Props {
   chat: Chat;
+  onCall: () => void;
 }
 
-const ChatHeader: React.FC<Props> = ({ chat }) => {
+const ChatHeader: React.FC<Props> = ({ chat, onCall }) => {
   return (
     <div className='p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-purple-600'>
       <div className='flex items-center justify-between'>
@@ -29,7 +30,7 @@ const ChatHeader: React.FC<Props> = ({ chat }) => {
           </div>
         </div>
         <div className='flex items-center space-x-2'>
-          <button className='p-3 hover:bg-white/20 rounded-full transition-all'>
+          <button className='p-3 hover:bg-white/20 rounded-full transition-all' onClick={onCall}>
             <Video className='w-6 h-6 text-white' />
           </button>
           {chat.isGroup && (
