@@ -16,7 +16,7 @@ import { PostService } from './post.service';
 import { AuthGuard } from 'src/common/guard/auth-guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
-@Controller('post')
+@Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

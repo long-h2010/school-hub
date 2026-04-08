@@ -1,6 +1,6 @@
 enum VisibilityType {
-    public = 'public',
-    private = 'private'
+  PUBLIC = 'public',
+  PRIVATE = 'private',
 }
 
 export default VisibilityType;

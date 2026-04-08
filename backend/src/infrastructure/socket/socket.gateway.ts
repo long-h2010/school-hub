@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io';
 import { MessageService } from 'src/api/message/message.service';
 
 @WebSocketGateway({
-  cors: { origin: [process.env.FE_URL] },
+  cors: { origin: [process.env.WEB_URL] },
 })
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;

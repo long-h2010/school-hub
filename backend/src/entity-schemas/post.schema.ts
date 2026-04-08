@@ -5,26 +5,26 @@ import VisibilityType from 'src/common/enums/visibility.enum';
 
 @Schema({ timestamps: true })
 export class Post {
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-    author: User;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  author: User;
 
-    @Prop({ default: VisibilityType.public })
-    visibility: VisibilityType
-    
-    @Prop()
-    content: string;
+  @Prop({ default: VisibilityType.PUBLIC })
+  visibility: VisibilityType;
 
-    @Prop()
-    images: string[];
+  @Prop()
+  content: string;
 
-    @Prop()
-    videos: string[];
+  @Prop()
+  images: string[];
 
-    @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }])
-    likes: User[];
+  @Prop()
+  videos: string[];
 
-    @Prop({ default: 0 })
-    comments: number;
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }])
+  likes: User[];
+
+  @Prop({ default: 0 })
+  comments: number;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/common/guard/auth-guard';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -26,6 +26,11 @@ export class UserController {
   @Get()
   async findAll() {
     return await this.userService.findAll();
+  }
+
+  @Get('overview')
+  async overview() {
+    return await this.userService.overview();
   }
 
   @Get(':id')

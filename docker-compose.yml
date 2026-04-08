@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  web-frontend:
+  web:
     build:
-      context: ./frontend
+      context: ./frontend/web
       dockerfile: Dockerfile
-    container_name: web-frontend
+    container_name: web
     ports:
       - "5173:5173"
     volumes:
@@ -18,7 +18,7 @@ services:
     networks:
       - app-network
   
-  api-backend:
+  api:
     build:
       context: ./backend
       dockerfile: Dockerfile

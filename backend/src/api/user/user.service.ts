@@ -57,4 +57,8 @@ export class UserService {
   async findByUsername(username: string) {
     return await this.userRepository.findOne({ username: username }, '+password', false);
   }
+
+  async overview() {
+    return await this.userRepository.overview();
+  }
 }

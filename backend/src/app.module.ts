@@ -11,6 +11,8 @@ import { PostModule } from './api/post/post.module';
 import { UserModule } from './api/user/user.module';
 import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module';
 import { SocketModule } from './infrastructure/socket/socket.module';
+import { ReportModule } from './api/report/report.module';
+import { GeminiModule } from './infrastructure/gemini/gemini.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { SocketModule } from './infrastructure/socket/socket.module';
     MessageModule,
     SocketModule,
     FollowingModule,
+    ReportModule,
+    GeminiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

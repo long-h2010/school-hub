@@ -12,7 +12,7 @@ import { MessageService } from './message.service';
 import SendMessageDto from './dto/send-message.dto';
 import { AuthGuard } from 'src/common/guard/auth-guard';
 
-@Controller('message')
+@Controller('messages')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 

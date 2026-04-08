@@ -60,7 +60,7 @@ export class AuthService {
 
     const user = await this.userService.findByUsername(username);
     if (!user) throw new UnauthorizedException('Invalid credentials');
-    if (user.status == UserStatus.banned)
+    if (user.status == UserStatus.BANNED)
       throw new UnauthorizedException('Account has been banned');
 
     const isPasswordValid = await bcrypt.compare(password, user.password);

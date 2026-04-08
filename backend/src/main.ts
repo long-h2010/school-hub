@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.enableCors({
-    origin: [process.env.FE_URL, process.env.FE_PROD_URL],
+    origin: [process.env.WEB_URL, process.env.ADMIN_URL],
     credentials: true, 
   });
   app.useWebSocketAdapter(new SocketIoAdapter(app, app.get(JwtService)))

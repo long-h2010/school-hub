@@ -13,7 +13,7 @@ import { AuthGuard } from 'src/common/guard/auth-guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { ReplyCommentDto } from './dto/reply-comment.dto';
 
-@Controller('comment')
+@Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 

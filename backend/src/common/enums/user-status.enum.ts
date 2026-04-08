@@ -1,7 +1,7 @@
 enum UserStatus {
-    active = 'active',
-    banned = 'banned',
-    restricted = 'restricted'
+  ACTIVE = 'active',
+  BANNED = 'banned',
+  RESTRICTED = 'restricted',
 }
 
-export default UserStatus
+export default UserStatus;

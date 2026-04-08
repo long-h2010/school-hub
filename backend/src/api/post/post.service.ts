@@ -49,7 +49,7 @@ export class PostService {
     limit: number,
     authorId?: string,
   ) {
-    const matchStage: any = { visibility: VisibilityType.public };
+    const matchStage: any = { visibility: VisibilityType.PUBLIC };
 
     if (authorId) matchStage.author = new mongoose.Types.ObjectId(authorId);
 
