@@ -1,6 +1,0 @@
-@import 'tailwindcss';
-
-.ant-menu-item,
-.ant-menu-submenu-title {
-  text-transform: capitalize;
-}
