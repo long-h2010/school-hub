@@ -4,6 +4,7 @@ import { LoginHeader, SocialLoginButton } from '../components/auth';
 import { useAuth } from '../contexts/auth-context';
 import { InputField, SubmitButton, Divider } from '../components/common';
 import { t } from 'i18next';
+import { Link } from 'react-router-dom';
 
 declare const google: {
   accounts: {
@@ -80,12 +81,12 @@ const Login: React.FC = () => {
             {error && <p className='mt-1 text-sm text-red-500'>{error}</p>}
 
             <div className='ml-auto'>
-              <a
-                href='/register'
+              <Link
+                to='/register'
                 className='text-sm text-red-600 hover:text-red-700 font-medium'
               >
                 {t('register')}
-              </a>
+              </Link>
             </div>
 
             <div className='flex items-center justify-between'>
