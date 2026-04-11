@@ -21,7 +21,7 @@ const CallPopup: React.FC<Props> = ({
   callee,
   minimized,
   onMinimize,
-  onExpand,
+  // onExpand,
 }) => {
   const { callStatus, setCallStatus } = useCall();
   const [muted, setMuted] = useState<boolean>(false);
@@ -58,14 +58,14 @@ const CallPopup: React.FC<Props> = ({
   //   return () => clearTimeout(t);
   // }, [isOpen, connecting]);
 
-  // useEffect(() => {
-  //   if (!isOpen || connecting) return;
-  //   const id = setInterval(
-  //     () => setSpeaking((s) => (s === 'remote' ? 'local' : 'remote')),
-  //     2800,
-  //   );
-  //   return () => clearInterval(id);
-  // }, [isOpen, connecting]);
+  useEffect(() => {
+    if (!isOpen || connecting) return;
+    const id = setInterval(
+      () => setSpeaking((s) => (s === 'remote' ? 'local' : 'remote')),
+      2800,
+    );
+    return () => clearInterval(id);
+  }, [isOpen, connecting]);
 
   const handleEnd = () => {
     setCallStatus('idle');
