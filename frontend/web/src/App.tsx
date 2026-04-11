@@ -26,20 +26,15 @@ function App() {
           <SocketProvider>
             <Suspense>
               <Routes>
-                <Route path='login' element={<Login />} />
-                <Route path='register' element={<Register />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/register' element={<Register />} />
                 <Route element={<ProtectedRoute />}>
                   <Route element={<MainLayout />}>
-                    <Route path='' element={<Home />} />
-                    <Route path='chat' element={<Messenger />} />
-                    <Route path='profile/:id' element={<Profile />} />
-                    <Route path='me' element={<Profile />} />
+                    <Route path='/' element={<Home />} />
+                    <Route path='/chat' element={<Messenger />} />
+                    <Route path='/profile/:id' element={<Profile />} />
+                    <Route path='/me' element={<Profile />} />
                   </Route>
-                </Route>
-                <Route
-                  path='admin'
-                  element={<ProtectedRoute requiredRole='admin' />}
-                >
                 </Route>
                 <Route path='*' element={<NotFound />} />
               </Routes>
