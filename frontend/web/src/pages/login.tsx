@@ -99,12 +99,12 @@ const Login: React.FC = () => {
                   {t('remember')}
                 </span>
               </label>
-              <a
-                href='#'
+              <Link
+                to='#'
                 className='text-sm text-red-600 hover:text-red-700 font-medium'
               >
                 {t('forgot-password')}
-              </a>
+              </Link>
             </div>
 
             <SubmitButton

@@ -4,6 +4,7 @@ import { InputField, SubmitButton } from '../components/common';
 import { t } from 'i18next';
 import { Lock, User } from 'lucide-react';
 import AxiosClient from '../api/axios-client';
+import { Link } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -88,12 +89,12 @@ const Register: React.FC = () => {
               )}
 
               <div className=''>
-                <a
-                  href='/login'
+                <Link
+                  to='/login'
                   className='text-sm text-red-600 hover:text-red-700 font-medium'
                 >
                   {t('login')}
-                </a>
+                </Link>
               </div>
 
               <SubmitButton
