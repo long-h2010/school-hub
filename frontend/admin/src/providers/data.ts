@@ -50,14 +50,12 @@ export const dataProvider = (
     }
 
     const url = `/${resource}?${stringify(queryParams)}`;
-    console.log(url)
 
     const { data } = await httpClient.get(url, {
       headers: meta?.headers,
     });
 
     const transformData = transformKeysToCamelCase(data);
-    console.log(transformData.founds)
 
     return {
       data: transformData.founds ?? transformData,
