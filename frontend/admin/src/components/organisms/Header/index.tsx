@@ -1,28 +1,17 @@
 import {
-  ArrowLeftOutlined,
   MoonOutlined,
   SunOutlined,
 } from '@ant-design/icons';
-import { Space, Button, Layout, Divider, Breadcrumb, theme } from 'antd';
+import { Space, Button, Layout, Breadcrumb, theme } from 'antd';
 import { themeStore } from '@/stores';
-import { Link, useLocation } from 'react-router';
+import { useBreadcrumb } from '@refinedev/core';
 
 export const Header = () => {
   const { mode, setMode } = themeStore();
   const {
     token: { colorBgContainer, colorText },
   } = theme.useToken();
-  const location = useLocation();
-
-  const path = location.pathname.split('/').filter(Boolean) ?? ['home'];
-
-  const breadcrumbItems = path.map((_, index) => {
-    const url = '/' + path.slice(0, index + 1).join('/');
-
-    return {
-      title: <Link to={url}>{url}</Link>,
-    };
-  });
+  const { breadcrumbs } = useBreadcrumb();
 
   return (
     <Layout.Header
@@ -35,15 +24,16 @@ export const Header = () => {
       }}
     >
       <Space>
-        <Button
-          type='text'
-          icon={<ArrowLeftOutlined />}
-          style={{ color: '#888' }}
-        >
-          Back
-        </Button>
-        <Divider type='vertical' />
-        <Breadcrumb items={[{ title: '' }, { title: '' }]} />
+        <Breadcrumb
+          items={breadcrumbs.map((item) => ({
+            title: (
+              <div className='flex items-center gap-1 capitalize'>
+                {item.icon} {item.label}
+              </div>
+            ),
+            href: item.href,
+          }))}
+        />
       </Space>
       <Space
         direction='vertical'

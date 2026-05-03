@@ -8,7 +8,7 @@ import { Login } from '@/pages/login';
 import { Dashboard } from '@/pages/dashboard';
 import { UserCreate, UserEdit, UserList, UserShow } from '@/pages/users';
 import { PostCreate, PostEdit, PostList, PostShow } from '@/pages/posts';
-import { ReportList, ReportShow } from '@/pages/reports';
+import { ReportEdit, ReportList, ReportShow } from '@/pages/reports';
 import Temp from '@/pages/temp';
 
 export const AppRoutes = () => {
@@ -49,6 +49,7 @@ export const AppRoutes = () => {
         <Route path={ResourceName.REPORTS}>
           <Route index element={<ReportList />} />
           <Route path='show/:id' element={<ReportShow />} />
+          <Route path='edit/:id' element={<ReportEdit />} />
         </Route>
       </Route>
     </Routes>

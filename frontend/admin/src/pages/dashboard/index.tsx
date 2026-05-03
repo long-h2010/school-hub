@@ -98,7 +98,7 @@ export const Dashboard = () => {
     <div className='flex flex-col gap-10'>
       <OverViewStats stats={stats} />
 
-      <div className='grid grid-cols-1 lg:grid-cols-2'>
+      <div className='grid grid-cols-1'>
         <div className='cols-span-1'>
           <Card>
             <div className='flex flex-col gap-1 px-5 mb-3'>

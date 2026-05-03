@@ -783,19 +783,10 @@ Return this exact JSON structure:
 
   return (
     <Layout style={{ minHeight: "100vh", background: "#f5f6fa" }}>
-      {contextHolder}
       <Content style={{ padding: "24px 28px" }}>
         {/* Page Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-          <div>
-            <Title level={4} style={{ margin: 0, fontWeight: 600 }}>
-              <FlagOutlined style={{ color: "#ff4d4f", marginRight: 8 }} />
-              Reports & Moderation
-            </Title>
-            <Text type="secondary" style={{ fontSize: 13 }}>
-              Review flagged content and evaluate posts with AI
-            </Text>
-          </div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24 }}>
+          
           <Space>
             <Button icon={<BarChartOutlined />}>Export report</Button>
             <Button
@@ -813,67 +804,6 @@ Return this exact JSON structure:
             </Button>
           </Space>
         </div>
-
-        {/* Stats Row */}
-        <Row gutter={12} style={{ marginBottom: 20 }}>
-          {[
-            {
-              title: "Total reports",
-              value: 247,
-              suffix: "",
-              color: "#1877f2",
-              prefix: <FileTextOutlined />,
-              extra: "+18 this week",
-              extraColor: "#52c41a",
-            },
-            {
-              title: "Pending review",
-              value: counts.pending,
-              suffix: "",
-              color: "#faad14",
-              prefix: <ClockCircleOutlined />,
-              extra: "Needs attention",
-              extraColor: "#faad14",
-            },
-            {
-              title: "AI auto-resolved",
-              value: 189,
-              suffix: "",
-              color: "#52c41a",
-              prefix: <RobotOutlined />,
-              extra: "76.5% resolution rate",
-              extraColor: "#52c41a",
-            },
-            {
-              title: "Avg. review time",
-              value: 4.2,
-              suffix: "m",
-              color: "#595959",
-              prefix: <SafetyOutlined />,
-              extra: "−1.3m vs last week",
-              extraColor: "#52c41a",
-            },
-          ].map((s, i) => (
-            <Col span={6} key={i}>
-              <Card
-                styles={{ body: { padding: "14px 16px" } }}
-                style={{ borderRadius: 12, border: "1px solid #f0f0f0" }}
-              >
-                <Statistic
-                  title={
-                    <Text type="secondary" style={{ fontSize: 12 }}>
-                      {s.prefix} {s.title}
-                    </Text>
-                  }
-                  value={s.value}
-                  suffix={s.suffix}
-                  valueStyle={{ color: s.color, fontSize: 26, fontWeight: 600 }}
-                />
-                <Text style={{ fontSize: 11, color: s.extraColor }}>{s.extra}</Text>
-              </Card>
-            </Col>
-          ))}
-        </Row>
 
         {/* Main Content */}
         <Row gutter={16}>
