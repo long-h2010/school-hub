@@ -13,6 +13,7 @@ import { CloudinaryModule } from './infrastructure/cloudinary/cloudinary.module'
 import { SocketModule } from './infrastructure/socket/socket.module';
 import { ReportModule } from './api/report/report.module';
 import { GeminiModule } from './infrastructure/gemini/gemini.module';
+import { MailModule } from './infrastructure/mail/mail.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { GeminiModule } from './infrastructure/gemini/gemini.module';
     FollowingModule,
     ReportModule,
     GeminiModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

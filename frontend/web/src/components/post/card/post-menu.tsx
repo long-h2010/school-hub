@@ -3,9 +3,10 @@ import type React from 'react';
 
 interface Props {
   setMenuOpen: (open: boolean) => void;
+  onReport: () => void; // thêm
 }
 
-const PostMenu: React.FC<Props> = ({ setMenuOpen }) => {
+const PostMenu: React.FC<Props> = ({ setMenuOpen, onReport }) => {
   return (
     <>
       <div className='fixed inset-0 z-10' onClick={() => setMenuOpen(false)} />
@@ -34,7 +35,13 @@ const PostMenu: React.FC<Props> = ({ setMenuOpen }) => {
           </div>
         </button>
         <div className='border-t'>
-          <button className='w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-100 text-left text-red-600'>
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              onReport();
+            }}
+            className='w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-100 text-left text-red-600'
+          >
             <X className='w-5 h-5' />
             <div>
               <p className='font-medium text-sm'>Báo cáo bài viết</p>

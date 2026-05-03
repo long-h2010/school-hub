@@ -8,11 +8,15 @@ import {
   Put,
   UseGuards,
   Request,
+  Patch,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/common/guard/auth-guard';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -45,9 +49,25 @@ export class UserController {
     return await this.userService.searchUser(userId, search);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return await this.userService.update(id, updateUserDto);
+  @Patch('')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'avatar', maxCount: 1 },
+      { name: 'coverPhoto', maxCount: 1 },
+    ]),
+  )
+  async update(
+    @Request() req: any,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFiles()
+    files: {
+      avatar?: Express.Multer.File[];
+      coverPhoto?: Express.Multer.File[];
+    },
+  ) {
+    const userId = req.user.id;
+    return this.userService.updateWithImages(userId, updateUserDto, files);
   }
 
   @Delete(':id')

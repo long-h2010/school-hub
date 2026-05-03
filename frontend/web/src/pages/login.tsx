@@ -100,7 +100,7 @@ const Login: React.FC = () => {
                 </span>
               </label>
               <Link
-                to='#'
+                to='/forgot-password'
                 className='text-sm text-red-600 hover:text-red-700 font-medium'
               >
                 {t('forgot-password')}

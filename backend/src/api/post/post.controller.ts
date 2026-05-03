@@ -33,8 +33,8 @@ export class PostController {
   }
 
   @Get()
-  async findAll() {
-    return await this.postService.findAll();
+  async findAll(@Query() query) {
+    return await this.postService.findAll(query);
   }
 
   @Get('feed')

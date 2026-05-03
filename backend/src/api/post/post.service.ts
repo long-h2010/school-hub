@@ -27,8 +27,8 @@ export class PostService {
     return await this.postRepository.create(data);
   }
 
-  async findAll() {
-    return await this.postRepository.findAll();
+  async findAll(query: any) {
+    return await this.postRepository.getList(query);
   }
 
   async findOne(id: string) {
@@ -40,7 +40,7 @@ export class PostService {
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} post`;
+    return this.postRepository.remove({ _id: id });
   }
 
   async getFeed(

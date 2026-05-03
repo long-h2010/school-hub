@@ -1,8 +1,8 @@
 import { UserDisplay } from '@/components/molecules';
 import { formatDateWithNoTime } from '@/lib/utils';
-import { MinusCircleOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, StopOutlined } from '@ant-design/icons';
 import { ShowButton, useTable } from '@refinedev/antd';
-import { Button, Space, Table, Tag } from 'antd';
+import { Button, Space, Table, Tag, Tooltip } from 'antd';
 import { useState } from 'react';
 
 export const UserList = () => {
@@ -37,6 +37,7 @@ export const UserList = () => {
       <Table.Column
         title='STATUS'
         dataIndex={'status'}
+        className='capitalize'
         render={(value) => (
           <Tag
             color={
@@ -57,15 +58,18 @@ export const UserList = () => {
         render={(value) => formatDateWithNoTime(value)}
       />
       <Table.Column
-        title='ACTIONS'
         render={(_, record) => (
           <Space>
             <ShowButton hideText size='small' recordItemId={record.id} />
-            <Button
-              icon={<MinusCircleOutlined />}
-              size='small'
-              style={{ color: 'red' }}
-            />
+            {record.status !== 'banned' ? (
+              <Tooltip title='Ban user'>
+                <Button icon={<StopOutlined />} size='small' danger />
+              </Tooltip>
+            ) : (
+              <Tooltip title='Unban'>
+                <Button icon={<MinusCircleOutlined />} size='small' danger />
+              </Tooltip>
+            )}
           </Space>
         )}
       />

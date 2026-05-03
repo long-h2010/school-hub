@@ -9,6 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { MessageService } from 'src/api/message/message.service';
+import { generateAgoraToken } from 'src/common/utils/generate-agora-token';
 
 @WebSocketGateway({
   cors: { origin: [process.env.WEB_URL] },
@@ -72,13 +73,40 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('calling')
   async handleCalling(@MessageBody() body: any) {
+    const uid = Math.floor(Math.random() * 100000000);
+    const tokenAgora = generateAgoraToken(body.chatId, uid);
+
+    this.server
+      .to(`user:${body.caller.id}`)
+      .emit('calling', {
+        caller: body.caller,
+        channel: body.chatId,
+        token: tokenAgora,
+        uid: uid,
+      });
+
     this.server
       .to(`user:${body.callee}`)
-      .emit('ringing', { room: body.chatId, caller: body.caller });
+      .emit('ringing', { channel: body.chatId, caller: body.caller });
   }
 
   @SubscribeMessage('accept-call')
   async handleAcceptCall(@MessageBody() body: any) {
-    this.server.to(`user:${body.caller}`).emit('callee-accept');
+    const uid = Math.floor(Math.random() * 100000000);
+    const tokenAgora = generateAgoraToken(body.channel, uid);
+
+    this.server.to(`user:${body.callee}`).emit('accept-call', {
+      caller: body.caller,
+      channel: body.channel,
+      token: tokenAgora,
+      uid: uid,
+    });
+
+    this.server.to(`user:${body.caller.id}`).emit('callee-accept');
+  }
+
+  @SubscribeMessage('end-call')
+  async handleEndCall(@MessageBody() body: any) {
+    this.server.to(`user:${body.user}`).emit('call-ended');
   }
 }

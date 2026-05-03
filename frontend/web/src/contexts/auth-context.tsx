@@ -3,6 +3,7 @@ import AxiosClient, { setAccessToken } from '../api/axios-client';
 
 interface AuthContextType {
   user: any | null;
+  setUser: (user: any) => void;
   token: string | null;
   error: string;
   isAuthenticated: boolean;
@@ -74,6 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const value = {
     user,
+    setUser,
     error,
     token,
     isAuthenticated: !!user,

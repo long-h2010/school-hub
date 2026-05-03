@@ -9,7 +9,7 @@ export class ReportService {
 
   async create(data: CreateReportDto) {
     if (await this.reportRepository.findOne({ post: data.post }, '', false))
-      return await this.update(data);
+      return await this.updateCountReport(data.post);
     else return await this.reportRepository.create(data);
   }
 
@@ -17,10 +17,18 @@ export class ReportService {
     return await this.reportRepository.getList(query);
   }
 
-  async update(data: UpdateReportDto) {
+  async update(id: string, data: UpdateReportDto) {
+    return await this.reportRepository.update({ _id: id }, { ...data });
+  }
+
+  async updateCountReport(postId: string) {
     return this.reportRepository.update(
-      { post: data.post },
+      { post: postId },
       { $inc: { reportCount: 1 } },
     );
+  }
+
+  async delete(id: string) {
+    return this.reportRepository.remove({ _id: id });
   }
 }

@@ -17,6 +17,9 @@ export class Report {
 
   @Prop({ enum: ReportStatus, default: ReportStatus.PENDING })
   status: string;
+
+  @Prop()
+  aiReview: string
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

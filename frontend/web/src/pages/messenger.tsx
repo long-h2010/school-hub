@@ -16,7 +16,7 @@ import { useCall } from '../contexts/call-context';
 
 const Messenger: React.FC = () => {
   const { user } = useAuth();
-  const { setCallStatus, setCallee } = useCall();
+  const { setCallee } = useCall();
   const { socket, onlines } = useSocket();
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
@@ -175,7 +175,6 @@ const Messenger: React.FC = () => {
 
   const onClickCall = () => {
     if (!selectedChat?.isGroup) {
-      setCallStatus('calling');
       setCallee({
         id: selectedChat?.otherUser,
         name: selectedChat?.displayName,
@@ -188,7 +187,7 @@ const Messenger: React.FC = () => {
         caller: {
           id: user._id,
           name: user.name,
-          avatar: user.avatar,
+          avatar: user.avatar, 
         },
       });
     }

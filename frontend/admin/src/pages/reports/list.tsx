@@ -1,14 +1,22 @@
 import { UserDisplay } from '@/components/molecules';
 import { ReportReason, ReportStatus } from '@/types';
-import { ThunderboltOutlined } from '@ant-design/icons';
 import {
-  DeleteButton,
-  EditButton,
-  ShowButton,
-  useTable,
-} from '@refinedev/antd';
+  DeleteOutlined,
+  StopOutlined,
+  ThunderboltOutlined,
+} from '@ant-design/icons';
+import { useTable } from '@refinedev/antd';
 import { useCustomMutation, useUpdate } from '@refinedev/core';
-import { Button, Card, message, Select, Space, Table, Tag } from 'antd';
+import {
+  Button,
+  Card,
+  message,
+  Select,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 
 const reasonOptions = [
@@ -242,9 +250,12 @@ export const ReportList = () => {
           align='center'
           render={(_, record) => (
             <Space>
-              <EditButton hideText size='small' recordItemId={record.id} />
-              <ShowButton hideText size='small' recordItemId={record.id} />
-              <DeleteButton hideText size='small' recordItemId={record.id} />
+              <Tooltip title='Ban author'>
+                <Button icon={<StopOutlined />} size='small' danger />
+              </Tooltip>
+              <Tooltip title='Remove post'>
+                <Button icon={<DeleteOutlined />} size='small' danger />
+              </Tooltip>
             </Space>
           )}
         />

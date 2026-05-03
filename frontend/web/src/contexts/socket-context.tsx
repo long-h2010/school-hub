@@ -12,8 +12,7 @@ const SocketContext = createContext<SocketContextType | null>(null);
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { token, isAuthenticated } = useAuth();
-  const { callStatus, setCallStatus, setIncomingCall } =
-    useCall();
+  const { callStatus, setCallStatus, setIncomingCall, setCallee } = useCall();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [onlines, setOnlines] = useState<string[]>([]);
 
@@ -41,19 +40,37 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       setOnlines((prev) => prev.filter((id) => id !== userId));
     });
 
+    newSocket.on('calling', (data) => {
+      console.log(data)
+      setCallStatus('calling');
+      setIncomingCall(data);
+    });
+
     newSocket.on('ringing', (data) => {
       if (callStatus !== 'idle') {
         newSocket.emit('call-busy');
         return;
       }
 
-      setCallStatus('ringing')
+      setCallStatus('ringing');
       setIncomingCall(data);
     });
 
+    newSocket.on('accept-call', (data) => {
+      setCallee(data.caller);
+      setIncomingCall(data);
+      setCallStatus('in-call');
+    });
+
     newSocket.on('callee-accept', () => {
-      setCallStatus('in-call')
-    })
+      setCallStatus('in-call');
+    });
+
+    newSocket.on('call-ended', () => {
+      setCallStatus('idle');
+      setIncomingCall(null);
+      setCallee(null);
+    });
 
     setSocket(newSocket);
 

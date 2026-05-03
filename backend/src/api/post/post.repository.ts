@@ -12,7 +12,7 @@ export class PostRepository extends BaseRepository<Post> {
 
   async getFeed(userId: string, stage: any, page: number, limit: number) {
     const skip = (page - 1) * limit;
-    
+
     const posts = await this.postModel.aggregate([
       { $match: stage },
       {
@@ -66,5 +66,31 @@ export class PostRepository extends BaseRepository<Post> {
       },
       { new: true },
     );
+  }
+
+  async getList(query: any) {
+    return await this.getManyAdvanced({
+      filter: {
+        ...(query.reason && { reason: query.reason }),
+        ...(query.status && { status: query.status }),
+      },
+
+      page: Number(query.page) || 1,
+      limit: Number(query.limit) || 10,
+
+      relations: [
+        {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author',
+          project: {
+            _id: 1,
+            name: 1,
+            avatar: 1,
+          },
+        },
+      ],
+    });
   }
 }

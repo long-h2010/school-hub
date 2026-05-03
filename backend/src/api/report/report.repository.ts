@@ -13,7 +13,6 @@ export class ReportRepository extends BaseRepository<Report> {
   }
 
   async getList(query: any) {
-    console.log(query)
     return await this.getManyAdvanced({
       filter: {
         ...(query.reason && { reason: query.reason }),

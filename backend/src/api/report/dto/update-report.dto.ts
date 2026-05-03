@@ -1,3 +1,6 @@
+import ReportStatus from "src/common/enums/report-status.enum";
+
 export class UpdateReportDto {
-  post: string;
+  status: ReportStatus;
+  aiReview: string;
 }

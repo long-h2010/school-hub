@@ -5,17 +5,19 @@ import AxiosClient from '../api/axios-client';
 import { SubmitButton } from '../components/common';
 import { useAuth } from '../contexts/auth-context';
 import { ListPost } from '../components/post/display';
+import UpdateProfileModal from '../components/user/update-profile-modal';
 
 const Profile = () => {
   const params = useParams();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const itsMe = location.pathname == '/me';
+  const itsMe = location.pathname === '/me';
   const userId = params.id ?? user._id;
   const [profile, setProfile] = useState<User>();
+  const [showEditModal, setShowEditModal] = useState(false);
 
-  if (params.id == user._id) navigate('/me');
+  if (params.id === user._id) navigate('/me');
 
   const fetchUser = async () => {
     const res = await AxiosClient.get(
@@ -36,7 +38,10 @@ const Profile = () => {
     navigate('/chat');
   };
 
-  // const handleFollow = () => {};
+  const handleProfileUpdated = (updatedUser: User) => {
+    setProfile(updatedUser);
+    if (itsMe && setUser) setUser(updatedUser);
+  };
 
   return (
     <div className='min-h-screen bg-gray-50 pt-14'>
@@ -52,7 +57,7 @@ const Profile = () => {
               <img
                 src={profile?.avatar}
                 alt={profile?.name}
-                className='w-32 h-32 rounded-full border-4 border-white shadow-xl'
+                className='w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover'
               />
             </div>
           </div>
@@ -67,7 +72,26 @@ const Profile = () => {
               </div>
 
               {itsMe ? (
-                <></>
+                <button
+                  onClick={() => setShowEditModal(true)}
+                  className='flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors shadow-sm'
+                >
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='w-4 h-4'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H8v-2.414a2 2 0 01.586-1.414z'
+                    />
+                  </svg>
+                  Chỉnh sửa trang cá nhân
+                </button>
               ) : (
                 <div className='flex space-x-2'>
                   <SubmitButton
@@ -103,13 +127,13 @@ const Profile = () => {
               </div>
               <div>
                 <p className='text-xl font-bold text-gray-900'>
-                  {profile?.followers}
+                  {profile?.followers ?? 0}
                 </p>
                 <p className='text-sm text-gray-500'>Người theo dõi</p>
               </div>
               <div>
                 <p className='text-xl font-bold text-gray-900'>
-                  {profile?.following}
+                  {profile?.following ?? 0}
                 </p>
                 <p className='text-sm text-gray-500'>Đang theo dõi</p>
               </div>
@@ -129,6 +153,15 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* Update Profile Modal */}
+      {showEditModal && profile && (
+        <UpdateProfileModal
+          profile={profile}
+          onClose={() => setShowEditModal(false)}
+          onUpdated={handleProfileUpdated}
+        />
+      )}
     </div>
   );
 };

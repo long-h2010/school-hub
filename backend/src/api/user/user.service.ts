@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FollowingService } from 'src/api/following/following.service';
 import { UserRepository } from './user.repository';
+import { CloudinaryService } from 'src/infrastructure/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly followingService: FollowingService,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -42,12 +44,38 @@ export class UserService {
     return await this.userRepository.findMany({ filter: query });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    return await this.userRepository.update({ id }, updateUserDto);
+  async updateWithImages(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    files: {
+      avatar?: Express.Multer.File[];
+      coverPhoto?: Express.Multer.File[];
+    },
+  ) {
+    const updateData: UpdateUserDto = { ...updateUserDto };
+
+    if (files?.avatar?.[0]) {
+      const uploaded = await this.cloudinaryService.saveImage(
+        files.avatar,
+        'photo',
+      );
+      updateData.avatar = uploaded[0];
+    }
+
+    if (files?.coverPhoto?.[0]) {
+      const uploaded = await this.cloudinaryService.saveImage(
+        files.coverPhoto,
+        'photo',
+      );
+      updateData.coverPhoto = uploaded[0];
+    }
+    console.log(updateData);
+
+    return await this.userRepository.update({ _id: id }, updateData);
   }
 
   async remove(id: string) {
-    return await  this.userRepository.remove({ id });
+    return await this.userRepository.remove({ id });
   }
 
   async findByEmail(email: string) {
@@ -55,10 +83,25 @@ export class UserService {
   }
 
   async findByUsername(username: string) {
-    return await this.userRepository.findOne({ username: username }, '+password', false);
+    return await this.userRepository.findOne(
+      { username: username },
+      '+password',
+      false,
+    );
   }
 
   async overview() {
     return await this.userRepository.overview();
+  }
+
+  async findByEmailToResetPassword(email: string) {
+    return await this.userRepository.findOne(
+      { email: email },
+      '+otp +otpExpiry',
+    );
+  }
+
+  async update(id, data: any) {
+    return await this.userRepository.update({ _id: id }, data);
   }
 }

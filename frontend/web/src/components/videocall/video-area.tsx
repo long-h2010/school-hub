@@ -2,13 +2,17 @@ import { VideoTile } from '.';
 import { Ripple } from '../common';
 
 interface Props {
+  localRef: any;
+  remoteRef: any;
   callee: any;
   connecting: boolean;
   muted: boolean;
   videoOff: boolean;
-  speaking: any;
+  speaking?: any;
 }
 const VideoArea: React.FC<Props> = ({
+  localRef,
+  remoteRef,
   callee,
   connecting,
   muted,
@@ -30,7 +34,7 @@ const VideoArea: React.FC<Props> = ({
                 background: 'linear-gradient(135deg,#312e81,#1e1b4b)',
               }}
             >
-              <img src={callee.avatar} alt='' className='rounded-full' />
+              <img src={callee.avatar || '/default-avatar.png'} alt='' className='rounded-full' />
             </div>
           </div>
           <div className='text-center'>
@@ -44,6 +48,7 @@ const VideoArea: React.FC<Props> = ({
         <>
           <div className='w-full h-full'>
             <VideoTile
+              ref={remoteRef}
               name={callee.name}
               avatar={callee.avatar}
               isMuted={false}
@@ -53,6 +58,7 @@ const VideoArea: React.FC<Props> = ({
           </div>
           <div className='absolute bottom-3 right-3 w-[140px] h-[110px] rounded-[14px] overflow-hidden border-2 border-white/[0.12] shadow-[0_8px_24px_rgba(0,0,0,0.5)] z-10 transition-transform duration-200 cursor-pointer hover:scale-[1.04]'>
             <VideoTile
+              ref={localRef}
               name='Bạn'
               avatar='🙂'
               isMuted={muted}
