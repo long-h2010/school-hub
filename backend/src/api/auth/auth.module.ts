@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { UserModule } from 'src/api/user/user.module';
+import { MailModule } from 'src/infrastructure/mail/mail.module';
 
 @Global()
 @Module({
@@ -15,6 +16,7 @@ import { UserModule } from 'src/api/user/user.module';
         },
       }) as JwtModuleOptions
     }),
+    MailModule,
     UserModule
   ],
   controllers: [AuthController],

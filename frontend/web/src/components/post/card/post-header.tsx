@@ -2,6 +2,7 @@ import { TrendingUp, Globe, MoreHorizontal } from 'lucide-react';
 import type { Post } from '../../../types/post';
 import { useState } from 'react';
 import PostMenu from './post-menu';
+import ReportModal from '../../report/report-modal';
 
 interface Props {
   post: Post;
@@ -10,6 +11,7 @@ interface Props {
 
 const PostHeader: React.FC<Props> = ({ post, showMenu = true }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   return (
     <div className='p-4 flex items-center justify-between'>
@@ -36,6 +38,7 @@ const PostHeader: React.FC<Props> = ({ post, showMenu = true }) => {
           </div>
         </div>
       </div>
+
       {showMenu && (
         <div className='relative'>
           <button
@@ -45,8 +48,17 @@ const PostHeader: React.FC<Props> = ({ post, showMenu = true }) => {
             <MoreHorizontal className='w-5 h-5 text-gray-600' />
           </button>
 
-          {menuOpen && <PostMenu setMenuOpen={setMenuOpen} />}
+          {menuOpen && (
+            <PostMenu
+              setMenuOpen={setMenuOpen}
+              onReport={() => setShowReport(true)}
+            />
+          )}
         </div>
+      )}
+
+      {showReport && (
+        <ReportModal postId={post.id} onClose={() => setShowReport(false)} />
       )}
     </div>
   );

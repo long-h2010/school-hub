@@ -17,7 +17,7 @@ const PostCard: React.FC<Props> = ({ post, onLike, onOpenPostDetail }) => {
 
   const handleClick = async () => {
     const now = Date.now();
-    if (now - lastTimeLikeRef.current < 1000) return; // Khoảng cách giữa 2 lần click là 1s, hạn chế việc spam request
+    if (now - lastTimeLikeRef.current < 1000) return; 
     lastTimeLikeRef.current = now;
 
     onLike(post.id);
@@ -28,10 +28,10 @@ const PostCard: React.FC<Props> = ({ post, onLike, onOpenPostDetail }) => {
       );
     } catch (err) {
       console.log(err);
-      onLike(post.id); // Rollback về ui ban dầu nếu lỗi req
+      onLike(post.id); 
     }
   };
-
+  
   return (
     <div className='bg-white rounded-lg shadow mb-4'>
       <PostHeader post={post} />

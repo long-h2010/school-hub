@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { LoginHeader } from '../components/auth';
 import { InputField, SubmitButton } from '../components/common';
 import { t } from 'i18next';
-import { Lock, User } from 'lucide-react';
+import { Lock, Mail, User } from 'lucide-react';
 import AxiosClient from '../api/axios-client';
 import { Link } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -19,6 +20,7 @@ const Register: React.FC = () => {
     await AxiosClient.post(import.meta.env.VITE_APP_REGISTER_ENDPOINT, {
       username,
       name,
+      email,
       password,
       confirmPassword,
     })
@@ -58,6 +60,15 @@ const Register: React.FC = () => {
               />
 
               <InputField
+                label={t('email')}
+                focusColor='ring-red-600'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder='example@gmail.com'
+                icon={Mail}
+              />
+
+              <InputField
                 label={t('password')}
                 type='password'
                 focusColor='ring-red-600'
@@ -71,7 +82,7 @@ const Register: React.FC = () => {
               />
 
               <InputField
-                label={t('confirm_password')}
+                label={t('confirm-password')}
                 type='password'
                 focusColor='ring-red-600'
                 value={confirmPassword}

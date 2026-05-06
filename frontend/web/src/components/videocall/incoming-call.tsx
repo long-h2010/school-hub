@@ -42,7 +42,6 @@ const IncomingCall: React.FC<Props> = ({
   visible,
 }) => {
   const [show, setShow] = useState<boolean>(false);
-  console.log(show, caller);
 
   useEffect(() => {
     if (visible) {

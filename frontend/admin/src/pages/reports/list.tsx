@@ -1,14 +1,30 @@
 import { UserDisplay } from '@/components/molecules';
 import { ReportReason, ReportStatus } from '@/types';
-import { ThunderboltOutlined } from '@ant-design/icons';
 import {
-  DeleteButton,
-  EditButton,
-  ShowButton,
-  useTable,
-} from '@refinedev/antd';
-import { useCustomMutation, useUpdate } from '@refinedev/core';
-import { Button, Card, message, Select, Space, Table, Tag } from 'antd';
+  DeleteOutlined,
+  MinusOutlined,
+  StopOutlined,
+  ThunderboltOutlined,
+  UndoOutlined,
+} from '@ant-design/icons';
+import { useTable } from '@refinedev/antd';
+import {
+  useCustomMutation,
+  useDelete,
+  useInvalidate,
+  useUpdate,
+} from '@refinedev/core';
+import {
+  Badge,
+  Button,
+  Card,
+  message,
+  Select,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 
 const reasonOptions = [
@@ -48,6 +64,7 @@ export const ReportList = () => {
   );
   const [batchLoading, setBatchLoading] = useState(false);
   const [messageApi] = message.useMessage();
+  const invalidate = useInvalidate();
 
   const { tableProps, setFilters } = useTable({
     filters: {
@@ -61,7 +78,9 @@ export const ReportList = () => {
   }, [tableProps.dataSource]);
 
   const { mutateAsync } = useCustomMutation();
-  const { mutate: update } = useUpdate();
+  const { mutate: updateReport } = useUpdate();
+  const { mutate: updatePost } = useUpdate();
+  const { mutate: updateUser } = useUpdate();
 
   const runAI = async (content: string, reportId: number) => {
     await mutateAsync(
@@ -80,7 +99,7 @@ export const ReportList = () => {
             prev.map((r) => (r.id === reportId ? { ...r, aiReview } : r)),
           );
 
-          update({
+          updateReport({
             resource: 'reports',
             id: reportId,
             values: { status: ReportStatus.PROCESSED, aiReview: aiReview },
@@ -92,8 +111,6 @@ export const ReportList = () => {
       },
     );
   };
-
-  useEffect(() => console.log(reports), [reports]);
 
   const handleReasonChange = (value: ReportReason | undefined) => {
     setReasonFilter(value);
@@ -131,6 +148,36 @@ export const ReportList = () => {
       `Batch evaluation complete for ${pending.length} reports.`,
     );
   }, [reports, messageApi]);
+
+  const handleToggleBan = (author: any) => {
+    updateUser(
+      {
+        id: author.id,
+        values: {
+          status: author.status === 'banned' ? 'active' : 'banned',
+        },
+        resource: import.meta.env.VITE_APP_USERS_ENDPOINT,
+      },
+      {
+        onSuccess: () =>
+          invalidate({ resource: 'reports', invalidates: ['list'] }),
+      },
+    );
+  };
+
+  const handleRemovePost = (postId: string, deleted: boolean) => {
+    updatePost(
+      {
+        id: postId,
+        values: { deletedAt: deleted ? null : Date.now() },
+        resource: import.meta.env.VITE_APP_POSTS_ENDPOINT,
+      },
+      {
+        onSuccess: () =>
+          invalidate({ resource: 'reports', invalidates: ['list'] }),
+      },
+    );
+  };
 
   return (
     <div className='flex flex-col gap-10'>
@@ -239,12 +286,65 @@ export const ReportList = () => {
           )}
         />
         <Table.Column
+          title='HANDLING VIOLATIONS'
+          dataIndex={'post'}
+          render={(value) => (
+            <div className='flex flex-col'>
+              {value.author.status == 'banned' ? (
+                <Badge status='error' text='Lock author account' />
+              ) : (
+                <></>
+              )}
+              {value.deletedAt ? (
+                <Badge status='error' text='Remove post' />
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
+        />
+        <Table.Column
           align='center'
           render={(_, record) => (
             <Space>
-              <EditButton hideText size='small' recordItemId={record.id} />
-              <ShowButton hideText size='small' recordItemId={record.id} />
-              <DeleteButton hideText size='small' recordItemId={record.id} />
+              {record.post.author.status == 'banned' ? (
+                <Tooltip title='Unban author'>
+                  <Button
+                    icon={<MinusOutlined />}
+                    size='small'
+                    style={{ color: 'green', borderColor: 'green' }}
+                    onClick={() => handleToggleBan(record.post.author)}
+                  />
+                </Tooltip>
+              ) : (
+                <Tooltip>
+                  <Button
+                    icon={<StopOutlined />}
+                    size='small'
+                    danger
+                    onClick={() => handleToggleBan(record.post.author)}
+                  />
+                </Tooltip>
+              )}
+              {record.post.deletedAt ? (
+                <Tooltip title='Restore post'>
+                  <Button
+                    icon={<UndoOutlined />}
+                    size='small'
+                    style={{ color: 'green', borderColor: 'green' }}
+                    onClick={() => handleRemovePost(record.post.id, true)}
+                  />
+                </Tooltip>
+              ) : (
+                <Tooltip title='Remove post'>
+                  <Button
+                    icon={<DeleteOutlined />}
+                    size='small'
+                    danger
+                    onClick={() => handleRemovePost(record.post.id, false)}
+                  />
+                </Tooltip>
+              )}
             </Space>
           )}
         />

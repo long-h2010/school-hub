@@ -144,7 +144,6 @@ const CommentSection: React.FC<Props> = ({ post }) => {
         return comment;
       })
     );
-    console.log('Replying to comment', commentId, 'with content:', replyText);
     setReplyText('');
   }, [replyTo]);
 

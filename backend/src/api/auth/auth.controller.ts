@@ -14,6 +14,9 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
 import { AuthGuard } from 'src/common/guard/auth-guard';
+import { SendOtpDto } from './dto/send-otp.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
@@ -25,7 +28,7 @@ const cookieOptions: any = {
   secure: process.env.NODE_ENV === 'production',
   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
   path: '/api/auth/refresh-token',
-}
+};
 
 @Controller('auth')
 export class AuthController {
@@ -83,5 +86,20 @@ export class AuthController {
   async logout(@Res() res: Response) {
     res.clearCookie('refreshToken', { path: '/api/auth/refresh-token' });
     return res.sendStatus(200);
+  }
+
+  @Post('send-otp')
+  sendOtp(@Body() dto: SendOtpDto) {
+    return this.authService.sendOtp(dto);
+  }
+
+  @Post('verify-otp')
+  verifyOtp(@Body() dto: VerifyOtpDto) {
+    return this.authService.verifyOtp(dto);
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }

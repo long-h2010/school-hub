@@ -8,6 +8,7 @@ import { CallProvider } from './contexts/call-context';
 import MainLayout from './layouts/main-layout';
 import Login from './pages/login';
 import Register from './pages/register';
+import ForgotPassword from './pages/forgot-password';
 import Home from './pages/home';
 import Messenger from './pages/messenger';
 import Profile from './pages/profile';
@@ -28,6 +29,7 @@ function App() {
               <Routes>
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />
+                <Route path='/forgot-password' element ={<ForgotPassword />} />
                 <Route element={<ProtectedRoute />}>
                   <Route element={<MainLayout />}>
                     <Route path='/' element={<Home />} />

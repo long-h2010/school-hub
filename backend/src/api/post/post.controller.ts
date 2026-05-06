@@ -33,8 +33,8 @@ export class PostController {
   }
 
   @Get()
-  async findAll() {
-    return await this.postService.findAll();
+  async findAll(@Query() query) {
+    return await this.postService.findAll(query);
   }
 
   @Get('feed')
@@ -57,7 +57,6 @@ export class PostController {
     @Query('limit') limit = 15,
   ) {
     const userId = req.user;
-    console.log(authorId);
     return await this.postService.getFeed(userId, page, +limit, authorId);
   }
 
@@ -77,8 +76,8 @@ export class PostController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string) {
-    return await this.postService.update(id);
+  async update(@Param('id') id: string, @Body() body) {
+    return await this.postService.update(id, body);
   }
 
   @Delete(':id')

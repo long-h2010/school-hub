@@ -27,20 +27,20 @@ export class PostService {
     return await this.postRepository.create(data);
   }
 
-  async findAll() {
-    return await this.postRepository.findAll();
+  async findAll(query: any) {
+    return await this.postRepository.getList(query);
   }
 
   async findOne(id: string) {
     return await this.postRepository.findOne({ _id: id });
   }
 
-  async update(id: string) {
-    return `This action updates a #${id} post`;
+  async update(id: string, data: any) {
+    return await this.postRepository.update({ _id: id }, data);
   }
 
   async remove(id: string) {
-    return `This action removes a #${id} post`;
+    return this.postRepository.softDelete({ _id: id });
   }
 
   async getFeed(

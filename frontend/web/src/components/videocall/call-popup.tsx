@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { User } from '../../types/user';
 import useTimer from '../../hooks/use-timer';
 import { useCall } from '../../contexts/call-context';
 import { ControlButtons, PopupHeader, VideoArea } from './';
+import AgoraRTC from 'agora-rtc-sdk-ng';
+import type { IAgoraRTCClient, IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng';
 
-type Speaker = 'remote' | 'local';
+// type Speaker = 'remote' | 'local';
 
 interface Props {
   isOpen: boolean;
@@ -15,6 +17,9 @@ interface Props {
   onExpand: () => void;
 }
 
+const APP_ID = import.meta.env.VITE_APP_AGORA_ID;
+const AGORA_CLIENT = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
+
 const CallPopup: React.FC<Props> = ({
   isOpen,
   onClose,
@@ -23,11 +28,20 @@ const CallPopup: React.FC<Props> = ({
   onMinimize,
   // onExpand,
 }) => {
-  const { callStatus, setCallStatus } = useCall();
+  const clientRef = useRef<IAgoraRTCClient | null>(null);
+  const [localTrack, setLocalTrack] = useState<any>(null);
+  const localVideoRef = useRef<HTMLDivElement>(null);
+  const remoteVideoRef = useRef<HTMLDivElement>(null);
+
+  const [remoteUser, setRemoteUser] = useState<IAgoraRTCRemoteUser | null>(
+    null,
+  );
+
+  const { incomingCall, callStatus, setCallStatus } = useCall();
   const [muted, setMuted] = useState<boolean>(false);
   const [videoOff, setVideoOff] = useState<boolean>(false);
   const [sharing, setSharing] = useState<boolean>(false);
-  const [speaking, setSpeaking] = useState<Speaker>('remote');
+  // const [speaking, setSpeaking] = useState<Speaker>('remote');
   const [visible, setVisible] = useState<boolean>(false);
   const [connecting, setConnecting] = useState<boolean>(false);
 
@@ -37,7 +51,77 @@ const CallPopup: React.FC<Props> = ({
     if (callStatus == 'in-call') setConnecting(true);
   }, [callStatus]);
 
-  useEffect(() => console.log(connecting), [connecting])
+  useEffect(() => {
+    clientRef.current = AGORA_CLIENT;
+
+    AGORA_CLIENT.on(
+      'user-published',
+      async (user: IAgoraRTCRemoteUser, mediaType) => {
+        await AGORA_CLIENT.subscribe(user, mediaType);
+        if (mediaType === 'video') {
+          setRemoteUser(user);
+        }
+        if (mediaType === 'audio' && user.audioTrack) {
+          user.audioTrack.play();
+        }
+      },
+    );
+
+    AGORA_CLIENT.on('user-unpublished', (user) => {
+      if (remoteUser?.uid === user.uid) setRemoteUser(null);
+    });
+
+    AGORA_CLIENT.on('user-left', () => {
+      setRemoteUser(null);
+      onClose?.();
+    });
+
+    return () => {
+      AGORA_CLIENT.removeAllListeners();
+    };
+  }, [onClose]);
+
+  // Join channel & publish tracks
+  const startCall = useCallback(async () => {
+    if (!clientRef.current) return;
+
+    if (!incomingCall?.channel || !incomingCall?.token || !incomingCall?.uid) {
+      console.error('No incoming call data available');
+      return;
+    }
+
+    try {
+      await clientRef.current.join(
+        APP_ID,
+        incomingCall?.channel,
+        incomingCall?.token,
+        incomingCall?.uid,
+      );
+
+      const localAudio = await AgoraRTC.createMicrophoneAudioTrack();
+      const localVideo = await AgoraRTC.createCameraVideoTrack();
+      setLocalTrack(localVideo);
+
+      await clientRef.current.publish([localAudio, localVideo]);
+    } catch (err) {
+      console.error('Start Agora call failed:', err);
+    }
+  }, [APP_ID, incomingCall?.channel, incomingCall?.token, incomingCall?.uid]);
+
+  useEffect(() => {
+    if (localTrack && localVideoRef.current) {
+      localTrack.play(localVideoRef.current);
+    }
+  }, [localTrack]);
+
+  // Leave call
+  const endCall = useCallback(async () => {
+    if (clientRef.current) {
+      await clientRef.current.leave();
+    }
+    setRemoteUser(null);
+    onClose?.();
+  }, [onClose]);
 
   // Reset state when a new call opens
   useEffect(() => {
@@ -45,8 +129,14 @@ const CallPopup: React.FC<Props> = ({
       setMuted(false);
       setVideoOff(false);
       setSharing(false);
+
       const t = setTimeout(() => setVisible(true), 10);
-      return () => clearTimeout(t);
+
+      startCall();
+
+      return () => {
+        clearTimeout(t);
+      };
     } else {
       setVisible(false);
     }
@@ -58,18 +148,26 @@ const CallPopup: React.FC<Props> = ({
   //   return () => clearTimeout(t);
   // }, [isOpen, connecting]);
 
+  // useEffect(() => {
+  //   if (!isOpen || connecting) return;
+  //   const id = setInterval(
+  //     () => setSpeaking((s) => (s === 'remote' ? 'local' : 'remote')),
+  //     2800,
+  //   );
+  //   return () => clearInterval(id);
+  // }, [isOpen, connecting]);
+
+  // Play remote video
   useEffect(() => {
-    if (!isOpen || connecting) return;
-    const id = setInterval(
-      () => setSpeaking((s) => (s === 'remote' ? 'local' : 'remote')),
-      2800,
-    );
-    return () => clearInterval(id);
-  }, [isOpen, connecting]);
+    if (remoteUser?.videoTrack && remoteVideoRef.current) {
+      remoteUser.videoTrack.play(remoteVideoRef.current);
+    }
+  }, [remoteUser]);
 
   const handleEnd = () => {
     setCallStatus('idle');
     setVisible(false);
+    endCall();
     setTimeout(onClose, 280);
   };
 
@@ -100,11 +198,13 @@ const CallPopup: React.FC<Props> = ({
         />
 
         <VideoArea
+          localRef={localVideoRef}
+          remoteRef={remoteVideoRef}
           callee={callee}
           connecting={connecting}
           muted={muted}
           videoOff={videoOff}
-          speaking={speaking}
+          // speaking={speaking}
         />
 
         <ControlButtons
