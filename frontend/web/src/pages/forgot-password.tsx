@@ -157,7 +157,6 @@ const ForgotPassword: React.FC = () => {
     }
     setErrorMsg('');
     setStep('resetting');
-    console.log(resetToken)
     try {
       await AxiosClient.post(import.meta.env.VITE_APP_RESET_PASSWORD_ENDPOINT, {
         resetToken: resetToken,

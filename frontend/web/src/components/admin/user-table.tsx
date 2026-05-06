@@ -5,7 +5,6 @@ const UserTable: React.FC<{
   onBanClick: (user: any) => void;
   onUnbanClick: (user: any) => void;
 }> = ({ users, onBanClick, onUnbanClick }) => {
-  console.log(users);
   return (
     <div className='overflow-x-auto'>
       <table className='w-full'>

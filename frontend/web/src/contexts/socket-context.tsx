@@ -41,7 +41,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     newSocket.on('calling', (data) => {
-      console.log(data)
       setCallStatus('calling');
       setIncomingCall(data);
     });

@@ -51,7 +51,6 @@ const ReportModal: React.FC<Props> = ({ postId, onClose }) => {
   const [selected, setSelected] = useState<string>('');
   const [step, setStep] = useState<Step>('select');
   const [error, setError] = useState('');
-  console.log(postId)
 
   const handleSubmit = async () => {
     if (!selected) return;

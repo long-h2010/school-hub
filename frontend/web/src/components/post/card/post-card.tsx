@@ -31,7 +31,7 @@ const PostCard: React.FC<Props> = ({ post, onLike, onOpenPostDetail }) => {
       onLike(post.id); 
     }
   };
-
+  
   return (
     <div className='bg-white rounded-lg shadow mb-4'>
       <PostHeader post={post} />

@@ -46,7 +46,6 @@ const CreatePostModal: React.FC<Props> = ({
       setImagesFiles((prev) => [...prev, ...files]);
       Array.from(files).forEach((file) => {
         const reader = new FileReader();
-        console.log(reader);
         reader.onloadend = () => {
           setUploadedImages((prev) => [...prev, reader.result as string]);
         };
