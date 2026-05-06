@@ -34,6 +34,7 @@ export class ReportRepository extends BaseRepository<Report> {
             content: 1,
             images: 1,
             videos: 1,
+            deletedAt: 1,
           },
           pipeline: [
             {
@@ -45,6 +46,7 @@ export class ReportRepository extends BaseRepository<Report> {
                 _id: 1,
                 name: 1,
                 avatar: 1,
+                status: 1,
               },
             },
           ],

@@ -19,7 +19,7 @@ export class Report {
   status: string;
 
   @Prop()
-  aiReview: string
+  aiReview: string;
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

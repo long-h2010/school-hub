@@ -25,6 +25,9 @@ export class Post {
 
   @Prop({ default: 0 })
   comments: number;
+
+  @Prop({ default: null })
+  deletedAt: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

@@ -97,6 +97,8 @@ export class AuthService {
       throw new UnauthorizedException('Email is not accepted');
 
     const user = await this.userService.findByUsername(username);
+    if (user.status == UserStatus.BANNED)
+      throw new UnauthorizedException('Account has been banned');
 
     if (user) {
       const token = await this.generateToken(user._id.toString());
@@ -199,7 +201,6 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
-    console.log(dto);
     let payload: { sub: string; purpose: string };
     try {
       payload = this.jwtService.verify(dto.resetToken);

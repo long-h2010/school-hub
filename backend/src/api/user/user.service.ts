@@ -17,8 +17,21 @@ export class UserService {
     return await this.userRepository.create(createUserDto);
   }
 
-  async findAll() {
-    return await this.userRepository.findAll();
+  async findAll(query: any) {
+    const { search, searchFields, status, page, limit } = query;
+    return await this.userRepository.getManyAdvanced({
+      page: +page,
+      limit: +limit,
+      filter: {
+        ...(status && { status }),
+      },
+      search: search
+        ? {
+            keyword: search,
+            fields: searchFields?.split(',') ?? [],
+          }
+        : undefined,
+    });
   }
 
   async findOne(id: string) {
@@ -69,7 +82,6 @@ export class UserService {
       );
       updateData.coverPhoto = uploaded[0];
     }
-    console.log(updateData);
 
     return await this.userRepository.update({ _id: id }, updateData);
   }

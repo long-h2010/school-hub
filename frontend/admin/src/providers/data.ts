@@ -1,6 +1,6 @@
 import { api } from '@/lib/api/axios';
 import { transformKeysToCamelCase } from '@/lib/utils';
-import { DataProvider } from '@refinedev/core';
+import { DataProvider, LogicalFilter } from '@refinedev/core';
 import { AxiosInstance } from 'axios';
 import { stringify } from 'query-string';
 
@@ -25,6 +25,18 @@ export const dataProvider = (
     };
 
     filters.forEach((item) => {
+      if ('operator' in item && item.operator === 'or') {
+        const orFilters = item.value as LogicalFilter[];
+        const keyword = orFilters[0]?.value;
+        const fields = orFilters
+          .filter((f) => 'field' in f && f.operator === 'contains')
+          .map((f) => (f as LogicalFilter).field);
+
+        if (keyword !== undefined) queryParams['search'] = keyword;
+        if (fields.length) queryParams['searchFields'] = fields.join(',');
+        return;
+      }
+
       if ('field' in item && item.operator && item.value !== undefined) {
         const { field, operator, value } = item;
 
@@ -64,7 +76,7 @@ export const dataProvider = (
   },
 
   getOne: async ({ resource, id, meta }) => {
-    const { data } = await httpClient.get(`${apiUrl}/${resource}/${id}`, {
+    const { data } = await httpClient.get(`${apiUrl}${resource}/${id}`, {
       headers: meta?.headers,
     });
 
@@ -74,7 +86,7 @@ export const dataProvider = (
   },
 
   create: async ({ resource, variables, meta }) => {
-    const { data } = await httpClient.post(`${apiUrl}/${resource}`, variables, {
+    const { data } = await httpClient.post(`${apiUrl}${resource}`, variables, {
       headers: meta?.headers,
     });
     return { data: data.data || data };
@@ -82,7 +94,7 @@ export const dataProvider = (
 
   update: async ({ resource, id, variables, meta }) => {
     const { data } = await httpClient.put(
-      `${apiUrl}/${resource}/${id}`,
+      `${apiUrl}${resource}/${id}`,
       variables,
       { headers: meta?.headers },
     );
@@ -90,7 +102,7 @@ export const dataProvider = (
   },
 
   deleteOne: async ({ resource, id, meta }) => {
-    const { data } = await httpClient.delete(`${apiUrl}/${resource}/${id}`, {
+    const { data } = await httpClient.delete(`${apiUrl}${resource}/${id}`, {
       headers: meta?.headers,
     });
     return { data: data.data || data };

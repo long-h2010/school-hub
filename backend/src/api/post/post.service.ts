@@ -35,12 +35,12 @@ export class PostService {
     return await this.postRepository.findOne({ _id: id });
   }
 
-  async update(id: string) {
-    return `This action updates a #${id} post`;
+  async update(id: string, data: any) {
+    return await this.postRepository.update({ _id: id }, data);
   }
 
   async remove(id: string) {
-    return this.postRepository.remove({ _id: id });
+    return this.postRepository.softDelete({ _id: id });
   }
 
   async getFeed(

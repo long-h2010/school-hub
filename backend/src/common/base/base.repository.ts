@@ -207,6 +207,12 @@ export class BaseRepository<T> {
     return await this.model.findOneAndDelete(query).exec();
   }
 
+  async softDelete(query: FilterQuery<T>) {
+    return await this.model
+      .findOneAndUpdate(query, { deletedAt: Date.now() })
+      .exec();
+  }
+
   async count() {
     return await this.model.countDocuments().exec();
   }

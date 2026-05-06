@@ -21,7 +21,6 @@ export const generateAgoraToken = (
     tokenExpireInSeconds,
     privilegeExpireInSeconds,
   );
-  console.log(uid, token)
 
   return token;
 };

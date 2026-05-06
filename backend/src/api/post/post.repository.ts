@@ -14,7 +14,7 @@ export class PostRepository extends BaseRepository<Post> {
     const skip = (page - 1) * limit;
 
     const posts = await this.postModel.aggregate([
-      { $match: stage },
+      { $match: { ...stage, deletedAt: null } },
       {
         $lookup: {
           from: 'users',

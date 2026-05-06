@@ -7,7 +7,6 @@ import { useState } from 'react';
 export const PostList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { tableProps } = useTable();
-  console.log(tableProps);
 
   return (
     <Table
