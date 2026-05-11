@@ -9,10 +9,11 @@ import PostDetail from './post-detail';
 
 interface Props {
   getPostsApi: string;
+  activeTab: string;
   newPost?: Post | null;
 }
 
-const ListPost: React.FC<Props> = ({ getPostsApi, newPost }) => {
+const ListPost: React.FC<Props> = ({ getPostsApi, activeTab, newPost }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -23,14 +24,14 @@ const ListPost: React.FC<Props> = ({ getPostsApi, newPost }) => {
 
   const handleGetFeed = async ({ pageParam = 1, limit = 15 }) => {
     const res = await AxiosClient.get(
-      `${getPostsApi}?page=${pageParam}&limit=${limit}`,
+      `${getPostsApi}?page=${pageParam}&limit=${limit}&tab=${activeTab}`,
     );
     return res.data;
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery({
-      queryKey: ['feed'],
+      queryKey: ['feed', activeTab],
       queryFn: handleGetFeed,
       initialPageParam: 1,
       getNextPageParam: (lastPage) =>

@@ -43,9 +43,10 @@ export class PostController {
     @Request() req: any,
     @Query('page') page = 1,
     @Query('limit') limit = 15,
+    @Query('tab') tab: 'new' | 'hot' | 'following' | 'liked' = 'new',
   ) {
     const userId = req.user;
-    return await this.postService.getFeed(userId, page, +limit);
+    return await this.postService.getFeed(userId, page, +limit, tab);
   }
 
   @Get('author/:authorId')
@@ -57,7 +58,7 @@ export class PostController {
     @Query('limit') limit = 15,
   ) {
     const userId = req.user;
-    return await this.postService.getFeed(userId, page, +limit, authorId);
+    return await this.postService.getFeed(userId, page, +limit, null, authorId);
   }
 
   @Get(':id')

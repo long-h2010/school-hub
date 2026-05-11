@@ -43,17 +43,35 @@ export class PostService {
     return this.postRepository.softDelete({ _id: id });
   }
 
+  private readonly sortMap: Record<string, Record<string, 1 | -1>> = {
+    new: { createdAt: -1 },
+    hot: { likesCount: -1, createdAt: -1 },
+    following: { createdAt: -1 },
+    liked: { createdAt: -1 },
+  };
+
   async getFeed(
     userId: string,
     page: number,
     limit: number,
+    tab?: 'new' | 'hot' | 'following' | 'liked',
     authorId?: string,
   ) {
     const matchStage: any = { visibility: VisibilityType.PUBLIC };
 
-    if (authorId) matchStage.author = new mongoose.Types.ObjectId(authorId);
+    if (authorId) {
+      matchStage.author = new mongoose.Types.ObjectId(authorId);
+    }
 
-    return await this.postRepository.getFeed(userId, matchStage, page, limit);
+    if (tab === 'liked') matchStage.likes = new mongoose.Types.ObjectId(userId);
+
+    return await this.postRepository.getFeed(
+      userId,
+      matchStage,
+      page,
+      limit,
+      this.sortMap[tab],
+    );
   }
 
   async updateLikes(postId: string, userId: string) {

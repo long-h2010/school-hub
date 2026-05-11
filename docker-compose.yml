@@ -1,36 +1,44 @@
 version: '3.8'
 
 services:
+  admin:
+    build:
+      context: ./frontend/admin
+    container_name: admin
+    restart: always
+    networks:
+      - app-network
+
   web:
     build:
       context: ./frontend/web
-      dockerfile: Dockerfile
     container_name: web
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
-    command: npm run dev -- --host 0.0.0.0
+    restart: always
     networks:
       - app-network
   
   api:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    container_name: api-backend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
+    container_name: api
+    restart: always
     environment:
-      - NODE_ENV=development
-    command: npm run start:dev -- --host 0.0.0.0
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - admin
+      - web
+      - api
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/conf.d/default.conf
     networks:
       - app-network
 

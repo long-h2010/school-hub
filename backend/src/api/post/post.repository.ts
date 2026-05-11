@@ -10,7 +10,13 @@ export class PostRepository extends BaseRepository<Post> {
     super(postModel);
   }
 
-  async getFeed(userId: string, stage: any, page: number, limit: number) {
+  async getFeed(
+    userId: string,
+    stage: any,
+    page: number,
+    limit: number,
+    sort: Record<string, 1 | -1> = { createdAt: -1 },
+  ) {
     const skip = (page - 1) * limit;
 
     const posts = await this.postModel.aggregate([
@@ -36,12 +42,12 @@ export class PostRepository extends BaseRepository<Post> {
           },
         },
       },
-      { $sort: { createdAt: -1 } },
+      { $sort: sort },
       { $skip: skip },
       { $limit: limit },
     ]);
 
-    const total = await this.postModel.countDocuments();
+    const total = await this.postModel.countDocuments({ ...stage, deletedAt: null });
     const hasMore = page * limit < total;
     const nextPage = hasMore ? +page + 1 : null;
 

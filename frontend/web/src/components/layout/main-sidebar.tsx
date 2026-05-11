@@ -1,4 +1,4 @@
-import { Clock, TrendingUp, Heart, RssIcon } from 'lucide-react';
+import { Clock, TrendingUp, Heart } from 'lucide-react';
 import type { TabType } from '../../types/post';
 import { ActiveButton } from '../common/button';
 import { t } from 'i18next';
@@ -24,13 +24,13 @@ const MainSidebar: React.FC<Props> = ({ activeTab, setActiveTab }) => {
       color: 'bg-orange-50 text-orange-600',
       icon: <TrendingUp className='w-5 h-5' />,
     },
-    {
-      index: 2,
-      type: 'following',
-      title: t('following-post.title'),
-      color: 'bg-green-50 text-green-600',
-      icon: <RssIcon className='w-5 h-5' />,
-    },
+    // {
+    //   index: 2,
+    //   type: 'following',
+    //   title: t('following-post.title'),
+    //   color: 'bg-green-50 text-green-600',
+    //   icon: <RssIcon className='w-5 h-5' />,
+    // },
     {
       index: 3,
       type: 'liked',
