@@ -67,8 +67,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     newSocket.on('call-ended', () => {
       setCallStatus('idle');
-      setIncomingCall(null);
-      setCallee(null);
     });
 
     setSocket(newSocket);

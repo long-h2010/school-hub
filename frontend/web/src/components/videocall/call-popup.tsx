@@ -11,6 +11,7 @@ import type {
   ICameraVideoTrack,
   ILocalVideoTrack,
 } from 'agora-rtc-sdk-ng';
+import { useSocket } from '../../contexts/socket-context';
 
 interface Props {
   isOpen: boolean;
@@ -31,9 +32,12 @@ const CallPopup: React.FC<Props> = ({
   minimized,
   onMinimize,
 }) => {
-  const clientRef = useRef<IAgoraRTCClient | null>(null);
+  const { socket } = useSocket();
+  const { incomingCall, setIncomingCall, setCallee, callStatus, setCallStatus } = useCall();
 
-  // Lưu riêng audio và video track để có thể bật/tắt
+  const clientRef = useRef<IAgoraRTCClient | null>(null);
+  const endingRef = useRef(false);
+
   const localAudioTrackRef = useRef<IMicrophoneAudioTrack | null>(null);
   const localVideoTrackRef = useRef<ICameraVideoTrack | null>(null);
   const screenTrackRef = useRef<ILocalVideoTrack | null>(null);
@@ -41,9 +45,10 @@ const CallPopup: React.FC<Props> = ({
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
 
-  const [remoteUser, setRemoteUser] = useState<IAgoraRTCRemoteUser | null>(null);
+  const [remoteUser, setRemoteUser] = useState<IAgoraRTCRemoteUser | null>(
+    null,
+  );
 
-  const { incomingCall, callStatus, setCallStatus } = useCall();
   const [muted, setMutedState] = useState<boolean>(false);
   const [videoOff, setVideoOffState] = useState<boolean>(false);
   const [sharing, setSharingState] = useState<boolean>(false);
@@ -53,29 +58,29 @@ const CallPopup: React.FC<Props> = ({
   // "connected"  = true sau khi in-call và join xong
   const [connected, setConnected] = useState<boolean>(false);
 
-  // Timer chỉ chạy khi đã connected
   const timer = useTimer(connected);
 
-  // Khi callStatus chuyển sang 'in-call' => bắt đầu join Agora
   useEffect(() => {
     if (callStatus === 'in-call') {
       startCall();
     }
   }, [callStatus]);
 
-  // Khởi tạo AGORA_CLIENT listeners
   useEffect(() => {
     clientRef.current = AGORA_CLIENT;
 
-    AGORA_CLIENT.on('user-published', async (user: IAgoraRTCRemoteUser, mediaType) => {
-      await AGORA_CLIENT.subscribe(user, mediaType);
-      if (mediaType === 'video') {
-        setRemoteUser(user);
-      }
-      if (mediaType === 'audio' && user.audioTrack) {
-        user.audioTrack.play();
-      }
-    });
+    AGORA_CLIENT.on(
+      'user-published',
+      async (user: IAgoraRTCRemoteUser, mediaType) => {
+        await AGORA_CLIENT.subscribe(user, mediaType);
+        if (mediaType === 'video') {
+          setRemoteUser(user);
+        }
+        if (mediaType === 'audio' && user.audioTrack) {
+          user.audioTrack.play();
+        }
+      },
+    );
 
     AGORA_CLIENT.on('user-unpublished', (user) => {
       if (remoteUser?.uid === user.uid) setRemoteUser(null);
@@ -91,21 +96,18 @@ const CallPopup: React.FC<Props> = ({
     };
   }, [onClose]);
 
-  // Phát video remote khi có
   useEffect(() => {
     if (remoteUser?.videoTrack && remoteVideoRef.current) {
       remoteUser.videoTrack.play(remoteVideoRef.current);
     }
   }, [remoteUser]);
 
-  // Phát video local khi có
   useEffect(() => {
     if (localVideoTrackRef.current && localVideoRef.current) {
       localVideoTrackRef.current.play(localVideoRef.current);
     }
   }, [connected]);
 
-  // Join channel & publish tracks
   const startCall = useCallback(async () => {
     if (!clientRef.current) return;
 
@@ -130,7 +132,6 @@ const CallPopup: React.FC<Props> = ({
 
       await clientRef.current.publish([localAudio, localVideo]);
 
-      // Sau khi publish xong mới coi là connected
       setConnected(true);
 
       if (localVideoRef.current) {
@@ -141,16 +142,17 @@ const CallPopup: React.FC<Props> = ({
     }
   }, [APP_ID, incomingCall?.channel, incomingCall?.token, incomingCall?.uid]);
 
-  // Leave call & dọn dẹp tracks
   const endCall = useCallback(async () => {
-    // Dừng và đóng screen share nếu đang share
+    if (endingRef.current) return;
+
+    endingRef.current = true;
+
     if (screenTrackRef.current) {
       screenTrackRef.current.stop();
       screenTrackRef.current.close();
       screenTrackRef.current = null;
     }
 
-    // Dừng và đóng local tracks
     if (localAudioTrackRef.current) {
       localAudioTrackRef.current.stop();
       localAudioTrackRef.current.close();
@@ -171,7 +173,6 @@ const CallPopup: React.FC<Props> = ({
     onClose?.();
   }, [onClose]);
 
-  // Reset state khi popup mở
   useEffect(() => {
     if (isOpen) {
       setMutedState(false);
@@ -186,8 +187,6 @@ const CallPopup: React.FC<Props> = ({
     }
   }, [isOpen]);
 
-  // ─── Handlers có thực tế điều khiển Agora tracks ───────────────────────────
-
   const handleSetMuted = (value: boolean) => {
     setMutedState(value);
     if (localAudioTrackRef.current) {
@@ -201,7 +200,6 @@ const CallPopup: React.FC<Props> = ({
 
     await localVideoTrackRef.current.setEnabled(!value);
 
-    // Sau khi bật lại cam, Agora đã detach khỏi div → cần play lại
     if (!value && localVideoRef.current) {
       localVideoTrackRef.current.play(localVideoRef.current);
     }
@@ -211,27 +209,23 @@ const CallPopup: React.FC<Props> = ({
     if (!clientRef.current) return;
 
     if (value) {
-      // Bắt đầu share màn hình
       try {
-        const screenTrack = await AgoraRTC.createScreenVideoTrack(
+        const screenTrack = (await AgoraRTC.createScreenVideoTrack(
           { encoderConfig: '1080p_1' },
           'disable',
-        ) as ILocalVideoTrack;
+        )) as ILocalVideoTrack;
 
         screenTrackRef.current = screenTrack;
 
-        // Unpublish camera, publish screen
         if (localVideoTrackRef.current) {
           await clientRef.current.unpublish(localVideoTrackRef.current);
         }
         await clientRef.current.publish(screenTrack);
 
-        // Phát preview local
         if (localVideoRef.current) {
           screenTrack.play(localVideoRef.current);
         }
 
-        // Tự động tắt sharing khi user dừng từ browser
         (screenTrack as any).on?.('track-ended', () => {
           handleSetSharing(false);
         });
@@ -241,7 +235,6 @@ const CallPopup: React.FC<Props> = ({
         console.error('Screen share failed:', err);
       }
     } else {
-      // Dừng share màn hình, quay về camera
       if (screenTrackRef.current) {
         await clientRef.current.unpublish(screenTrackRef.current);
         screenTrackRef.current.stop();
@@ -263,9 +256,18 @@ const CallPopup: React.FC<Props> = ({
   const handleEnd = () => {
     setCallStatus('idle');
     setVisible(false);
-    endCall();
+
+    socket?.emit('end-call', { user: callee?.id });
     setTimeout(onClose, 280);
   };
+
+  useEffect(() => {
+    if (callStatus === 'idle') {
+      endCall();
+      setIncomingCall(null);
+      setCallee(null);
+    }
+  }, [callStatus, endCall]);
 
   if (!isOpen) return null;
   if (minimized) return null;

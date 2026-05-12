@@ -48,7 +48,6 @@ const GlobalCall = () => {
     setMinimized(false);
 
     socket?.emit('end-call', {
-      user: callee?.id,
       channel: incomingCall?.channel,
     });
   };
@@ -83,7 +82,7 @@ const GlobalCall = () => {
         />
       )}
 
-      {openRingingPopup && (
+      {openRingingPopup && incomingCall && (
         <IncomingCall
           caller={incomingCall?.caller}
           onAccept={onAccept}

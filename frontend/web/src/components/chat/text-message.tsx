@@ -30,7 +30,6 @@ const TextMessage: React.FC<Props> = ({ messages, chat, ref }) => {
   const { user } = useAuth();
   const currentUserId = user?._id;
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  console.log(messages)
 
   return (
     <>

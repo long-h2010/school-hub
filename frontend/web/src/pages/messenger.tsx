@@ -153,7 +153,7 @@ const Messenger: React.FC = () => {
             ...chat,
             lastMessage: {
               sender: { id: newMsg.user.id, name: newMsg.user.name },
-              message: newMsg.content || (newMsg.images?.length ? '🖼 Đã gửi ảnh' : ''),
+              message: newMsg.content || (newMsg.images?.length ? 'Đã gửi ảnh' : ''),
               time: newMsg.time,
             },
             time: newMsg.time,

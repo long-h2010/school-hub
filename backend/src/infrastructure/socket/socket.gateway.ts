@@ -73,9 +73,14 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('calling')
-  async handleCalling(@MessageBody() body: any) {
+  async handleCalling(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: any,
+  ) {
     const uid = Math.floor(Math.random() * 100000000);
     const tokenAgora = generateAgoraToken(body.chatId, uid);
+
+    client.join(`call:${body.chatId}`);
 
     this.server.to(`user:${body.caller.id}`).emit('calling', {
       caller: body.caller,
@@ -90,9 +95,14 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('accept-call')
-  async handleAcceptCall(@MessageBody() body: any) {
+  async handleAcceptCall(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: any,
+  ) {
     const uid = Math.floor(Math.random() * 100000000);
     const tokenAgora = generateAgoraToken(body.channel, uid);
+
+    client.join(`call:${body.channel}`);
 
     this.server.to(`user:${body.callee}`).emit('accept-call', {
       caller: body.caller,
@@ -106,6 +116,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('end-call')
   async handleEndCall(@MessageBody() body: any) {
-    this.server.to(`user:${body.user}`).emit('call-ended');
+    if (body.user) this.server.to(`user:${body.user}`).emit('call-ended');
+    this.server.to(`call:${body.channel}`).emit('call-ended');
   }
 }
