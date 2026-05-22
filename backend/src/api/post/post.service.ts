@@ -81,4 +81,12 @@ export class PostService {
   async updateCommentCounting(postId: string) {
     return await this.postRepository.updateCommentCounting(postId);
   }
+
+  async overview() {
+    return await this.postRepository.overview();
+  }
+
+  async count(userId: string) {
+    return await this.postRepository.countDocuments(userId)
+  }
 }

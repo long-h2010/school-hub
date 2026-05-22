@@ -47,7 +47,10 @@ export class PostRepository extends BaseRepository<Post> {
       { $limit: limit },
     ]);
 
-    const total = await this.postModel.countDocuments({ ...stage, deletedAt: null });
+    const total = await this.postModel.countDocuments({
+      ...stage,
+      deletedAt: null,
+    });
     const hasMore = page * limit < total;
     const nextPage = hasMore ? +page + 1 : null;
 
@@ -98,5 +101,51 @@ export class PostRepository extends BaseRepository<Post> {
         },
       ],
     });
+  }
+
+  async overview() {
+    const now = new Date();
+    const thisMonth = now.getMonth() + 1;
+    const thisYear = now.getFullYear();
+
+    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonth = lastMonthDate.getMonth() + 1;
+    const lastYear = lastMonthDate.getFullYear();
+
+    const [total, monthly] = await Promise.all([
+      this.postModel.countDocuments(),
+      this.postModel.aggregate([
+        {
+          $group: {
+            _id: {
+              month: { $month: '$createdAt' },
+              year: { $year: '$createdAt' },
+            },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { '_id.year': 1, '_id.month': 1 } },
+        { $limit: 12 },
+      ]),
+    ]);
+
+    const thisMonthCount =
+      monthly.find((m) => m._id.month === thisMonth && m._id.year === thisYear)
+        ?.count ?? 0;
+
+    const lastMonthCount =
+      monthly.find((m) => m._id.month === lastMonth && m._id.year === lastYear)
+        ?.count ?? 0;
+
+    const growthPercent =
+      lastMonthCount === 0
+        ? 100
+        : ((thisMonthCount - lastMonthCount) / lastMonthCount) * 100;
+
+    return { total, growthPercent, monthly };
+  }
+
+  async countDocuments(userId: string) {
+    return this.postModel.countDocuments({ author: userId })
   }
 }

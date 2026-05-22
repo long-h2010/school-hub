@@ -35,6 +35,11 @@ export class ReportController {
     return await this.moderationService.evaluate(body.content);
   }
 
+  @Get('overview')
+  ovweview() {
+    return this.reportService.overview();
+  }
+
   @Put(':id')
   async update(@Param('id') id: string, @Body() data: UpdateReportDto) {
     return await this.reportService.update(id, data);

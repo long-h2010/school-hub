@@ -31,4 +31,8 @@ export class ReportService {
   async delete(id: string) {
     return this.reportRepository.remove({ _id: id });
   }
+
+  async overview() {
+    return this.reportRepository.overview();
+  }
 }

@@ -32,6 +32,12 @@ export class PostController {
     return await this.postService.create(userId, body.content, images);
   }
 
+  @Get('overview')
+  @UseGuards(AuthGuard)
+  async overview() {
+    return await this.postService.overview();
+  }
+
   @Get()
   async findAll(@Query() query) {
     return await this.postService.findAll(query);
@@ -47,6 +53,14 @@ export class PostController {
   ) {
     const userId = req.user;
     return await this.postService.getFeed(userId, page, +limit, tab);
+  }
+
+  @Get('count')
+  @UseGuards(AuthGuard)
+  async count(
+    @Request() req: any) {
+    const userId = req.user.id;
+    return await this.postService.count(userId);
   }
 
   @Get('author/:authorId')

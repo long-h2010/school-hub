@@ -18,7 +18,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/common/guard/auth-guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { query } from 'express';
 
 @Controller('users')
 export class UserController {
@@ -35,6 +34,7 @@ export class UserController {
   }
 
   @Get('overview')
+  @UseGuards(AuthGuard)
   async overview() {
     return await this.userService.overview();
   }
