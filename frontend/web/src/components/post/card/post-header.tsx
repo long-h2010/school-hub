@@ -3,6 +3,7 @@ import type { Post } from '../../../types/post';
 import { useState } from 'react';
 import PostMenu from './post-menu';
 import ReportModal from '../../report/report-modal';
+import { Link } from 'react-router-dom';
 
 interface Props {
   post: Post;
@@ -16,11 +17,13 @@ const PostHeader: React.FC<Props> = ({ post, showMenu = true }) => {
   return (
     <div className='p-4 flex items-center justify-between'>
       <div className='flex items-center space-x-3'>
-        <img
-          src={post.avatar}
-          alt={post.author}
-          className='w-10 h-10 rounded-full'
-        />
+        <Link to={`profile/${post.authorId}`}>
+          <img
+            src={post.avatar}
+            alt={post.author}
+            className='w-10 h-10 rounded-full'
+          />
+        </Link>
         <div>
           <div className='flex items-center space-x-2'>
             <h3 className='font-semibold text-sm'>{post.author}</h3>

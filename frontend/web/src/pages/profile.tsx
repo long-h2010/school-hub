@@ -15,6 +15,7 @@ const Profile = () => {
   const itsMe = location.pathname === '/me';
   const userId = params.id ?? user._id;
   const [profile, setProfile] = useState<User>();
+  const [postsCount, setPostsCount] = useState<number>(0);
   const [showEditModal, setShowEditModal] = useState(false);
 
   if (params.id === user._id) navigate('/me');
@@ -26,9 +27,18 @@ const Profile = () => {
     setProfile(res.data);
   };
 
+  const getPostsCount = async () => {
+    const res = await AxiosClient.get(`/posts/count`);
+    setPostsCount(res.data);
+  };
+
   useEffect(() => {
     fetchUser();
   }, [userId]);
+
+  useEffect(() => {
+    getPostsCount();
+  }, []);
 
   const handleClickChat = async () => {
     const res = await AxiosClient.post(import.meta.env.VITE_APP_CHAT_ENDPOINT, {
@@ -122,7 +132,7 @@ const Profile = () => {
 
             <div className='flex space-x-8 py-4 border-t border-gray-100'>
               <div>
-                <p className='text-xl font-bold text-gray-900'>{0}</p>
+                <p className='text-xl font-bold text-gray-900'>{postsCount}</p>
                 <p className='text-sm text-gray-500'>Bài viết</p>
               </div>
               <div>

@@ -11,8 +11,8 @@ export const authService = {
       password: data.password,
     });
 
-    const { user, access_token: accessToken } = res.data;
-    authStore.getState().setAuth(accessToken, user);
+    const { user, accessToken } = res.data;
+    authStore.getState().setAuth(user, accessToken);
 
     return res.data;
   },
@@ -32,7 +32,7 @@ export const authService = {
       import.meta.env.VITE_REFRESH_TOKEN_ENDPOINT,
     );
 
-    const newAccessToken = res.data.access_token;
+    const newAccessToken = res.data.accessToken;
     authStore.setState({ accessToken: newAccessToken });
 
     return newAccessToken;

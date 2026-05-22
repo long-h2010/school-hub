@@ -2,6 +2,7 @@ export type TabType = "new" | "hot" | "following" | "liked";
 
 export interface Post {
   id: string;
+  authorId: string;
   author: string;
   avatar: string;
   time: string;

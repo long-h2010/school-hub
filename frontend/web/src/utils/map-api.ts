@@ -12,6 +12,7 @@ export const mapUserApi = (user: any) => {
 export const mapPostApi = (post: any): Post => {
   return {
     id: post._id,
+    authorId: post.author._id,
     author: post.author.name,
     avatar: post.author.avatar,
     time: post.createdAt,

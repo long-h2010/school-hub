@@ -9,7 +9,7 @@ import PostDetail from './post-detail';
 
 interface Props {
   getPostsApi: string;
-  activeTab: string;
+  activeTab?: string;
   newPost?: Post | null;
 }
 
